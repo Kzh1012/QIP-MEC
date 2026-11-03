@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#005EB8">
+<title>UKMEC 2025 pill check</title>
+<style>
+  :root {
+    color-scheme: light;
+    --blue: #005EB8;
+    --blue-dark: #003087;
+    --text: #212B32;
+    --muted: #425563;
+    --line: #d8dde0;
+    --bg: #f0f4f5;
+    --amber-bg: #fff4d6;
+    --amber-edge: #6b5300;
+    --strong-bg: #ffe0b2;
+    --strong-edge: #7a4f01;
+    --red-bg: #fde8e8;
+    --red-edge: #da291c;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  [hidden] { display: none !important; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    padding-bottom: 9rem;
+  }
+
+  .skip {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    background: #fff;
+    color: var(--blue-dark);
+    padding: 8px 12px;
+    z-index: 5;
+    transform: translateY(-150%);
+  }
+
+  .skip:focus { transform: none; }
+
+  .banner {
+    background: var(--amber-bg);
+    color: var(--text);
+    border-bottom: 4px solid var(--amber-edge);
+    padding: 12px 16px;
+    font-size: 1.125rem;
+  }
+
+  .banner p { margin: 0 0 8px; }
+  .banner p:last-child { margin: 0; }
+
+  .banner a {
+    color: var(--blue-dark);
+    font-weight: 700;
+  }
+
+  .masthead {
+    background: var(--blue);
+    color: #fff;
+    padding: 20px 16px;
+  }
+
+  .masthead h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .masthead p { margin: 4px 0 0; }
+
+  .flag-jump {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: var(--blue);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    padding: 12px 16px;
+    min-height: 48px;
+  }
+
+  .flag-jump.is-amber { background: #ffb81c; color: var(--text); }
+  .flag-jump.is-red { background: var(--red-edge); color: #fff; }
+
+  main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  .lead { margin: 0 0 16px; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .layout > * { min-width: 0; }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 16px;
+    margin-bottom: 16px;
+    scroll-margin-top: 60px;
+  }
+
+  .card h2, .summary h2 {
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--blue);
+    color: var(--blue);
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+
+  .hint { margin: 0 0 12px; color: var(--muted); }
+
+  fieldset {
+    border: 0;
+    margin: 0 0 12px;
+    padding: 12px;
+    min-width: 0;
+    border-left: 6px solid transparent;
+  }
+
+  legend {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .paintable.is-flag-amber { background: var(--amber-bg); border-left-color: var(--amber-edge); }
+  .paintable.is-flag-strong { background: var(--strong-bg); border-left-color: var(--strong-edge); }
+  .paintable.is-flag-red { background: var(--red-bg); border-left-color: var(--red-edge); }
+
+  label { display: block; font-weight: 700; margin-bottom: 4px; }
+
+  .choice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 12px;
+    border: 2px solid var(--muted);
+    background: #fff;
+    color: var(--text);
+    font-weight: 700;
+    line-height: 1.3;
+    cursor: pointer;
+  }
+
+  .choice input {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 auto;
+    accent-color: var(--blue);
+  }
+
+  .choice.is-selected {
+    border-color: var(--blue);
+    background: #cce4f7;
+    box-shadow: inset 0 0 0 1px var(--blue);
+  }
+
+  .choice:focus-within {
+    outline: 3px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  .choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .choices .choice { flex: 1 1 calc(50% - 8px); }
+  .choices.stack .choice { flex-basis: 100%; }
+  .choices.fit .choice { flex: 1 1 6.5rem; }
+
+  input[type="number"], textarea {
+    font: inherit;
+    color: var(--text);
+    background: #fff;
+    border: 2px solid var(--muted);
+    border-radius: 4px;
+    min-height: 48px;
+    padding: 8px 12px;
+    width: 100%;
+    max-width: 16rem;
+  }
+
+  textarea { max-width: none; resize: vertical; }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .callout { margin: 12px 0 0; font-weight: 700; }
+  .callout-neutral {
+    font-weight: 400;
+    background: #e8edee;
+    border-left: 6px solid var(--muted);
+    padding: 12px;
+  }
+
+  .flag-tag { font-weight: 700; }
+
+  .info {
+    margin: 12px 0 0;
+    padding: 12px;
+    background: #e8f4fc;
+    border-left: 6px solid var(--blue);
+  }
+
+  .badge {
+    display: inline-block;
+    margin-left: 8px;
+    background: var(--blue);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.4;
+    padding: 2px 8px;
+    vertical-align: middle;
+  }
+
+  .new-group {
+    margin-top: 8px;
+    padding-top: 4px;
+    border-top: 2px solid var(--blue);
+  }
+
+  .new-group h3 {
+    margin: 12px 0;
+    font-size: 1.125rem;
+    color: var(--blue);
+  }
+
+  details { margin-top: 8px; }
+
+  summary {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  .summary {
+    position: sticky;
+    top: 56px;
+    max-height: calc(100vh - 56px - 8.5rem);
+    overflow: auto;
+  }
+
+  .flag-list { list-style: none; margin: 0; padding: 0; }
+
+  .flag {
+    margin: 0 0 8px;
+    padding: 12px;
+    border-left: 6px solid transparent;
+  }
+
+  .flag-amber { background: var(--amber-bg); border-left-color: var(--amber-edge); }
+  .flag-strong { background: var(--strong-bg); border-left-color: var(--strong-edge); }
+  .flag-red { background: var(--red-bg); border-left-color: var(--red-edge); }
+
+  .cumulative {
+    background: #e8f4fc;
+    border-left: 6px solid var(--blue);
+    padding: 12px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  #note {
+    min-height: 320px;
+    overflow-wrap: anywhere;
+  }
+
+  #plan { min-height: 96px; overflow-wrap: anywhere; }
+
+  .actions-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    background: #fff;
+    border-top: 4px solid var(--blue);
+    box-shadow: 0 -2px 8px rgba(33, 43, 50, 0.15);
+    padding: 12px 16px;
+  }
+
+  button {
+    font: inherit;
+    font-weight: 700;
+    min-height: 48px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  #copy-btn {
+    flex: 1 1 10rem;
+    background: var(--blue);
+    color: #fff;
+    border: 2px solid var(--blue);
+  }
+
+  #copy-btn:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+
+  #reset-btn {
+    flex: 1 1 10rem;
+    background: #fff;
+    color: var(--blue);
+    border: 2px solid var(--blue);
+  }
+
+  #reset-btn:hover { background: #e8f4fc; }
+
+  #copy-status {
+    flex: 1 1 100%;
+    margin: 0;
+    font-weight: 700;
+    color: var(--blue-dark);
+  }
+
+  .site-footer {
+    background: #fff;
+    border-top: 4px solid var(--blue);
+    padding: 16px;
+    color: var(--text);
+  }
+
+  .site-footer p { margin: 0 0 4px; }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible,
+  .flag-jump:focus-visible,
+  h2:focus {
+    outline: 3px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 899px) {
+    .layout { grid-template-columns: 1fr; }
+    .summary {
+      position: static;
+      max-height: none;
+      overflow: visible;
+    }
+  }
+
+  @media (max-width: 400px) {
+    main { padding: 12px; }
+    .card { padding: 12px; }
+    .choices.fit .choice { flex-basis: 100%; }
+  }
+
+  @media (min-width: 700px) {
+    .masthead h1 { font-size: 1.75rem; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to checklist</a>
+
+<div class="banner" role="note">
+  <p><strong>Documentation aid only.</strong> Does not replace clinical judgement or the CoSRH UKMEC 2025 tables.</p>
+  <p><a href="https://www.cosrh.org/Public/Standards-and-Guidance/uk-medical-eligibility-criteria-for-contraceptive-use-ukmec.aspx" target="_blank" rel="noopener noreferrer">CoSRH UKMEC 2025 tables (opens in a new tab)</a></p>
+</div>
+
+<header class="masthead">
+  <h1>UKMEC 2025 pill check</h1>
+  <p>Combined hormonal contraception (pill, patch, or ring). Checklist v1.0.</p>
+</header>
+
+<a class="flag-jump" id="flag-jump" href="#flags">Items to check: none flagged</a>
+
+<main id="content">
+  <p class="lead">Record the review, then copy the note into EMIS. Blank items are written as “not asked”. Highlights mean the answer should be checked in the CoSRH UKMEC 2025 tables. This page does not give a UKMEC category or a yes/no decision. Nothing is saved in the browser.</p>
+
+  <form id="check-form" autocomplete="off" autocapitalize="off">
+    <div class="layout">
+      <div>
+        <section class="card">
+          <h2 id="method-heading" tabindex="-1">1. Method</h2>
+          <fieldset>
+            <legend>Method</legend>
+            <div class="choices fit">
+              <label class="choice"><input type="radio" name="method" value="coc"> <span>COC</span></label>
+              <label class="choice"><input type="radio" name="method" value="patch"> <span>Patch</span></label>
+              <label class="choice"><input type="radio" name="method" value="ring"> <span>Ring</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Review type</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="review" value="new"> <span>New start</span></label>
+              <label class="choice"><input type="radio" name="review" value="cont"> <span>Continuation</span></label>
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="card">
+          <h2>2. Age</h2>
+          <fieldset id="fs-age">
+            <legend><label for="age">Age (years)</label></legend>
+            <input id="age" name="age" type="number" inputmode="numeric" min="10" max="80" step="1" autocomplete="off">
+            <p id="callout-age" class="callout" hidden></p>
+          </fieldset>
+        </section>
+
+        <section class="card">
+          <h2>3. Blood pressure</h2>
+          <fieldset class="paintable" id="fs-bp">
+            <legend>Reading</legend>
+            <div class="pair">
+              <div>
+                <label for="sys">Systolic (mmHg)</label>
+                <input id="sys" name="sys" type="number" inputmode="numeric" min="60" max="300" step="1" autocomplete="off">
+              </div>
+              <div>
+                <label for="dia">Diastolic (mmHg)</label>
+                <input id="dia" name="dia" type="number" inputmode="numeric" min="30" max="200" step="1" autocomplete="off">
+              </div>
+            </div>
+            <fieldset>
+              <legend>Setting</legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="bpSetting" value="clinic"> <span>Clinic</span></label>
+                <label class="choice"><input type="radio" name="bpSetting" value="home"> <span>Home average</span></label>
+              </div>
+            </fieldset>
+            <p id="callout-bp" class="callout" hidden></p>
+            <details>
+              <summary>NICE stage labels used on this page</summary>
+              <p>These are NICE blood pressure stages, not UKMEC categories. The higher of the systolic and diastolic stages is shown.</p>
+              <ul>
+                <li>Clinic: stage 1 = 140–159 and/or 90–99; stage 2/3 = 160 or higher and/or 100 or higher.</li>
+                <li>Home average: stage 1 = 135–149 and/or 85–94; stage 2/3 = 150 or higher and/or 95 or higher.</li>
+              </ul>
+            </details>
+          </fieldset>
+          <fieldset class="paintable" id="fs-htn">
+            <legend>Known hypertension (controlled)</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="htn" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="htn" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-htn" class="callout" hidden></p>
+          </fieldset>
+        </section>
+
+        <section class="card">
+          <h2>4. BMI</h2>
+          <p class="hint" id="bmi-hint">BMI 30 or above is highlighted. BMI 35 or above is highlighted more strongly. Use a full stop for decimals, for example 27.4.</p>
+          <fieldset>
+            <legend>How will you enter BMI?</legend>
+            <div class="choices stack">
+              <label class="choice"><input type="radio" name="bmiMode" value="direct"> <span>Enter BMI</span></label>
+              <label class="choice"><input type="radio" name="bmiMode" value="calc"> <span>Height and weight</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="paintable" id="fs-bmi">
+            <legend>Result</legend>
+            <div id="bmi-direct" hidden>
+              <label for="bmi">BMI (kg/m2)</label>
+              <input id="bmi" name="bmi" type="number" inputmode="decimal" min="10" max="100" step="0.1" autocomplete="off" aria-describedby="bmi-hint">
+            </div>
+            <div id="bmi-calc" hidden>
+              <div class="pair">
+                <div>
+                  <label for="height">Height (cm)</label>
+                  <input id="height" name="height" type="number" inputmode="decimal" min="100" max="230" step="1" autocomplete="off">
+                </div>
+                <div>
+                  <label for="weight">Weight (kg)</label>
+                  <input id="weight" name="weight" type="number" inputmode="decimal" min="25" max="350" step="0.1" autocomplete="off">
+                </div>
+              </div>
+            </div>
+            <p id="callout-bmi" class="callout" hidden></p>
+          </fieldset>
+        </section>
+
+        <section class="card">
+          <h2>5. Smoking</h2>
+          <p class="hint">Current smoking, and stopping less than 1 year ago, are highlighted. The highlight is stronger when age is 35 or over.</p>
+          <fieldset class="paintable" id="fs-smoking">
+            <legend>Smoking</legend>
+            <div class="choices stack">
+              <label class="choice"><input type="radio" name="smoking" value="never"> <span>Never</span></label>
+              <label class="choice"><input type="radio" name="smoking" value="exlt1"> <span>Ex-smoker stopped &lt;1 year</span></label>
+              <label class="choice"><input type="radio" name="smoking" value="exgte1"> <span>Ex-smoker stopped &gt;=1 year</span></label>
+              <label class="choice"><input type="radio" name="smoking" value="current"> <span>Current</span></label>
+            </div>
+            <div id="cigs-wrap" hidden>
+              <label for="cigs">Cigarettes per day</label>
+              <input id="cigs" name="cigs" type="number" inputmode="numeric" min="0" max="80" step="1" autocomplete="off">
+            </div>
+            <p id="callout-smoking" class="callout" hidden></p>
+          </fieldset>
+        </section>
+
+        <section class="card">
+          <h2>6. Vaping <span class="badge">New in 2025</span></h2>
+          <fieldset class="paintable" id="fs-vaping">
+            <legend>Vaping</legend>
+            <div class="choices fit">
+              <label class="choice"><input type="radio" name="vaping" value="never"> <span>Never</span></label>
+              <label class="choice"><input type="radio" name="vaping" value="ex"> <span>Ex</span></label>
+              <label class="choice"><input type="radio" name="vaping" value="current"> <span>Current</span></label>
+            </div>
+            <p id="callout-vaping" class="callout" hidden></p>
+          </fieldset>
+        </section>
+
+        <section class="card">
+          <h2>7. Migraine</h2>
+          <p class="hint">Any migraine is highlighted. Migraine with aura is highlighted most strongly.</p>
+          <fieldset class="paintable" id="fs-migraine">
+            <legend>Migraine</legend>
+            <div class="choices stack">
+              <label class="choice"><input type="radio" name="migraine" value="none"> <span>None</span></label>
+              <label class="choice"><input type="radio" name="migraine" value="noaura"> <span>Without aura</span></label>
+              <label class="choice"><input type="radio" name="migraine" value="aura"> <span>With aura</span></label>
+            </div>
+            <div id="mig-change-wrap" hidden>
+              <fieldset>
+                <legend>Started or worsened since starting CHC?</legend>
+                <div class="choices">
+                  <label class="choice"><input type="radio" name="migChange" value="yes"> <span>Yes</span></label>
+                  <label class="choice"><input type="radio" name="migChange" value="no"> <span>No</span></label>
+                </div>
+              </fieldset>
+            </div>
+            <p id="callout-migraine" class="callout" hidden></p>
+          </fieldset>
+        </section>
+
+        <section class="card">
+          <h2>8. History</h2>
+          <p class="hint">Yes is highlighted for a table check. New UKMEC 2025 items are marked.</p>
+
+          <fieldset class="paintable" id="fs-vte">
+            <legend>Personal history of VTE</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="vte" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="vte" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-vte" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-vteFam">
+            <legend>First-degree relative with VTE</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="vteFam" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="vteFam" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-vteFam" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-thromb">
+            <legend>Known thrombogenic mutation or antiphospholipid antibodies</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="thromb" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="thromb" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-thromb" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-immob">
+            <legend>Immobility</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="immob" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="immob" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-immob" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-cvd">
+            <legend>Stroke/TIA or ischaemic heart disease</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="cvd" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="cvd" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-cvd" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-cvrisk">
+            <legend>Multiple cardiovascular risk factors</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="cvrisk" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="cvrisk" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-cvrisk" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-dm">
+            <legend>Diabetes with complications</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="dm" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="dm" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-dm" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-breast">
+            <legend>Breast cancer (current or past)</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="breast" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="breast" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-breast" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-liver">
+            <legend>Liver disease or liver tumour</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="liver" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="liver" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-liver" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-sle">
+            <legend>SLE</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="sle" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="sle" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-sle" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-valve">
+            <legend>Complicated valvular heart disease</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="valve" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="valve" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-valve" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-pp">
+            <legend>Postpartum &lt;6 weeks</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="pp" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="pp" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-pp" class="callout" hidden></p>
+          </fieldset>
+
+          <fieldset class="paintable" id="fs-enzyme">
+            <legend>Enzyme-inducing drugs</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="enzyme" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="enzyme" value="no"> <span>No</span></label>
+            </div>
+            <p id="callout-enzyme" class="callout" hidden></p>
+          </fieldset>
+
+          <div class="new-group">
+            <h3>New in UKMEC 2025</h3>
+
+            <fieldset class="paintable" id="fs-ckd">
+              <legend>Chronic kidney disease <span class="badge">New in 2025</span></legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="ckd" value="yes"> <span>Yes</span></label>
+                <label class="choice"><input type="radio" name="ckd" value="no"> <span>No</span></label>
+              </div>
+              <p id="callout-ckd" class="callout" hidden></p>
+            </fieldset>
+
+            <fieldset class="paintable" id="fs-sct">
+              <legend>Sickle cell trait <span class="badge">New in 2025</span></legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="sct" value="yes"> <span>Yes</span></label>
+                <label class="choice"><input type="radio" name="sct" value="no"> <span>No</span></label>
+              </div>
+              <p id="callout-sct" class="callout" hidden></p>
+            </fieldset>
+
+            <fieldset class="paintable" id="fs-ms">
+              <legend>Multiple sclerosis <span class="badge">New in 2025</span></legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="ms" value="yes"> <span>Yes</span></label>
+                <label class="choice"><input type="radio" name="ms" value="no"> <span>No</span></label>
+              </div>
+              <p id="callout-ms" class="callout" hidden></p>
+            </fieldset>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>9. Mood and anxiety</h2>
+          <fieldset id="fs-mood">
+            <legend>Mood/anxiety discussed</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="mood" value="yes"> <span>Yes</span></label>
+              <label class="choice"><input type="radio" name="mood" value="no"> <span>No</span></label>
+            </div>
+            <p class="info">UKMEC 2025: counsel and monitor mood.</p>
+          </fieldset>
+        </section>
+      </div>
+
+      <aside class="card summary" id="flags" aria-labelledby="flags-heading">
+        <h2 id="flags-heading">Items to check</h2>
+        <p class="hint">Each highlight should be checked in the CoSRH UKMEC 2025 tables. Highlight strength is not a UKMEC category.</p>
+        <p id="cumulative" class="cumulative" hidden></p>
+        <ul id="flag-list" class="flag-list"></ul>
+        <p id="flag-empty">No items flagged.</p>
+        <p class="hint">Questions left blank appear as “not asked” in the note.</p>
+      </aside>
+    </div>
+
+    <section class="card" aria-labelledby="note-heading">
+      <h2 id="note-heading">Consultation note</h2>
+      <label for="plan">Plan</label>
+      <textarea id="plan" name="plan" rows="3" spellcheck="true"></textarea>
+      <p class="hint">The plan is included at the end of the note. Edit it here. The preview matches the answers above.</p>
+      <label for="note">Plain-text note</label>
+      <textarea id="note" readonly spellcheck="false" aria-readonly="true"></textarea>
+    </section>
+  </form>
+</main>
+
+<div class="actions-bar">
+  <button type="button" id="copy-btn">Copy note</button>
+  <button type="button" id="reset-btn">Reset</button>
+  <p id="copy-status" role="status" hidden></p>
+</div>
+
+<footer class="site-footer">
+  <p>Checklist v1.0</p>
+  <p>Last reviewed: 3 November 2026</p>
+  <p>Author: [name], GP trainee</p>
+</footer>
+
+<p id="flag-announcer" class="visually-hidden" role="status"></p>
+
+<noscript>
+  <p class="banner">JavaScript is needed to build the note and highlight items. Enable JavaScript in Edge or Chrome. This page does not download anything.</p>
+</noscript>
+
+<script>
+(function () {
+  "use strict";
+
+  var VERSION = "v1.0";
+  var CHECK_PHRASE = "Relevant to UKMEC 2025 - check CoSRH table.";
+  var CUMULATIVE = "Multiple risk factors present - UKMEC 2025 advises clinical judgement on cumulative risk";
+
+  var CHECKS = [
+    { name: "vte", label: "Personal history of VTE", level: "red" },
+    { name: "vteFam", label: "First-degree relative with VTE", level: "amber" },
+    { name: "thromb", label: "Known thrombogenic mutation or antiphospholipid antibodies", level: "amber" },
+    { name: "immob", label: "Immobility", level: "amber" },
+    { name: "cvd", label: "Stroke/TIA or ischaemic heart disease", level: "amber" },
+    { name: "cvrisk", label: "Multiple cardiovascular risk factors", level: "amber" },
+    { name: "dm", label: "Diabetes with complications", level: "amber" },
+    { name: "breast", label: "Breast cancer (current or past)", level: "amber" },
+    { name: "liver", label: "Liver disease or liver tumour", level: "amber" },
+    { name: "sle", label: "SLE", level: "amber" },
+    { name: "valve", label: "Complicated valvular heart disease", level: "amber" },
+    { name: "pp", label: "Postpartum <6 weeks", level: "amber" },
+    { name: "enzyme", label: "Enzyme-inducing drugs", level: "amber" },
+    { name: "ckd", label: "Chronic kidney disease (new in UKMEC 2025)", level: "amber" },
+    { name: "sct", label: "Sickle cell trait (new in UKMEC 2025)", level: "amber" },
+    { name: "ms", label: "Multiple sclerosis (new in UKMEC 2025)", level: "amber" }
+  ];
+
+  var NOTE_ROWS = [
+    ["thromb", "Thrombogenic mutation or antiphospholipid antibodies"],
+    ["immob", "Immobility"],
+    ["cvd", "Stroke/TIA or ischaemic heart disease"],
+    ["cvrisk", "Multiple cardiovascular risk factors"],
+    ["dm", "Diabetes with complications"],
+    ["breast", "Breast cancer (current or past)"],
+    ["liver", "Liver disease or liver tumour"],
+    ["sle", "SLE"],
+    ["valve", "Complicated valvular heart disease"],
+    ["pp", "Postpartum <6 weeks"],
+    ["enzyme", "Enzyme-inducing drugs"]
+  ];
+
+  var lastSig = null;
+  var copiedTimer = 0;
+
+  function $(id) { return document.getElementById(id); }
+
+  function radio(name) {
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : "";
+  }
+
+  function num(id) {
+    var el = $(id);
+    if (!el) return null;
+    var raw = String(el.value).trim();
+    if (raw === "") return null;
+    var n = Number(raw);
+    if (!isFinite(n)) return null;
+    return n;
+  }
+
+  function round1(n) {
+    return Math.round(n * 10) / 10;
+  }
+
+  function plainNum(n) {
+    if (Math.abs(n - Math.round(n)) < 1e-9) return String(Math.round(n));
+    return String(round1(n));
+  }
+
+  function yn(value) {
+    if (value === "yes") return "Yes";
+    if (value === "no") return "No";
+    return "not asked";
+  }
+
+  function tagFor(level) {
+    if (level === "red") return "Strongest highlight:";
+    if (level === "strong") return "Stronger highlight:";
+    return "Highlight:";
+  }
+
+  function rank(level) {
+    if (level === "red") return 3;
+    if (level === "strong") return 2;
+    return 1;
+  }
+
+  function settingLabel(v) {
+    if (v === "clinic") return "clinic";
+    if (v === "home") return "home average";
+    return "setting not asked";
+  }
+
+  function makeFlag(id, level, text, target, callout) {
+    return {
+      id: id,
+      level: level,
+      text: text,
+      tag: tagFor(level),
+      target: target,
+      callout: callout
+    };
+  }
+
+  function classifyBp(sys, dia, setting) {
+    if (sys === null || dia === null || !setting) {
+      return { stage: "", warning: false, partial: sys !== null || dia !== null || !!setting };
+    }
+    if (sys < 60 || dia < 30 || sys > 300 || dia > 200 || dia >= sys) {
+      return { stage: "", warning: true, partial: false };
+    }
+    var stage2 = setting === "clinic" ? (sys >= 160 || dia >= 100) : (sys >= 150 || dia >= 95);
+    var stage1 = setting === "clinic" ? (sys >= 140 || dia >= 90) : (sys >= 135 || dia >= 85);
+    if (stage2) return { stage: "23", warning: false, partial: false };
+    if (stage1) return { stage: "1", warning: false, partial: false };
+    return { stage: "below", warning: false, partial: false };
+  }
+
+  function readState() {
+    var age = num("age");
+    var sys = num("sys");
+    var dia = num("dia");
+    var bpSetting = radio("bpSetting");
+    var bp = classifyBp(sys, dia, bpSetting);
+    var bmiMode = radio("bmiMode");
+    var bmi = null;
+    var bmiError = "";
+    if (bmiMode === "direct") {
+      var direct = num("bmi");
+      if (direct === null) {
+        bmi = null;
+      } else if (direct < 10 || direct > 100) {
+        bmiError = "Check this BMI. It is not highlighted and is written in the note as needing a check.";
+      } else {
+        bmi = round1(direct);
+      }
+    } else if (bmiMode === "calc") {
+      var height = num("height");
+      var weight = num("weight");
+      if (height === null || weight === null) {
+        bmi = null;
+      } else if (height < 100 || height > 230 || weight < 25 || weight > 350) {
+        bmiError = "Check height and weight. BMI was not calculated.";
+      } else {
+        bmi = round1(weight / Math.pow(height / 100, 2));
+      }
+    }
+    var answers = {};
+    CHECKS.forEach(function (item) { answers[item.name] = radio(item.name); });
+    return {
+      method: radio("method"),
+      review: radio("review"),
+      age: age,
+      sys: sys,
+      dia: dia,
+      bpSetting: bpSetting,
+      bp: bp,
+      htn: radio("htn"),
+      bmiMode: bmiMode,
+      bmi: bmi,
+      bmiError: bmiError,
+      smoking: radio("smoking"),
+      cigs: num("cigs"),
+      vaping: radio("vaping"),
+      migraine: radio("migraine"),
+      migChange: radio("migChange"),
+      answers: answers,
+      mood: radio("mood"),
+      plan: $("plan").value.trim()
+    };
+  }
+
+  function smokingSentence(state) {
+    var ageBit = "";
+    var level = "amber";
+    if (state.age !== null && state.age >= 35) {
+      ageBit = " aged 35 or over";
+      level = "strong";
+    } else if (state.age === null) {
+      ageBit = " (age not asked)";
+    }
+    if (state.smoking === "current") {
+      var cig = state.cigs === null ? "cigarettes per day not asked" : plainNum(state.cigs) + " cigarettes/day";
+      return {
+        level: level,
+        text: "Current smoker" + ageBit + " (" + cig + "). " + CHECK_PHRASE
+      };
+    }
+    return {
+      level: level,
+      text: "Ex-smoker stopped less than 1 year ago" + ageBit + ". " + CHECK_PHRASE
+    };
+  }
+
+  function buildFlags(state) {
+    var flags = [];
+    if (state.bp.stage === "1") {
+      flags.push(makeFlag(
+        "bp",
+        "amber",
+        "Blood pressure is NICE stage 1 (" + settingLabel(state.bpSetting) + "). " + CHECK_PHRASE,
+        "fs-bp",
+        "callout-bp"
+      ));
+    } else if (state.bp.stage === "23") {
+      flags.push(makeFlag(
+        "bp",
+        "red",
+        "Blood pressure is NICE stage 2/3 (" + settingLabel(state.bpSetting) + "). " + CHECK_PHRASE,
+        "fs-bp",
+        "callout-bp"
+      ));
+    }
+    if (state.htn === "yes") {
+      flags.push(makeFlag(
+        "htn",
+        "amber",
+        "Known hypertension (controlled). " + CHECK_PHRASE,
+        "fs-htn",
+        "callout-htn"
+      ));
+    }
+    if (state.bmi !== null && state.bmi >= 35) {
+      flags.push(makeFlag(
+        "bmi",
+        "strong",
+        "BMI 35 or above (" + state.bmi.toFixed(1) + "). " + CHECK_PHRASE,
+        "fs-bmi",
+        "callout-bmi"
+      ));
+    } else if (state.bmi !== null && state.bmi >= 30) {
+      flags.push(makeFlag(
+        "bmi",
+        "amber",
+        "BMI 30 or above (" + state.bmi.toFixed(1) + "). " + CHECK_PHRASE,
+        "fs-bmi",
+        "callout-bmi"
+      ));
+    }
+    if (state.smoking === "current" || state.smoking === "exlt1") {
+      var smoking = smokingSentence(state);
+      flags.push(makeFlag("smoking", smoking.level, smoking.text, "fs-smoking", "callout-smoking"));
+    }
+    if (state.vaping === "current") {
+      flags.push(makeFlag(
+        "vaping",
+        "amber",
+        "Current vaping. UKMEC 2025: prioritise methods other than CHC. " + CHECK_PHRASE,
+        "fs-vaping",
+        "callout-vaping"
+      ));
+    }
+    if (state.migraine === "aura") {
+      flags.push(makeFlag(
+        "migraine",
+        "red",
+        "Migraine with aura. " + CHECK_PHRASE,
+        "fs-migraine",
+        "callout-migraine"
+      ));
+    } else if (state.migraine === "noaura") {
+      var extra = "Migraine without aura. ";
+      if (state.migChange === "yes") extra = "Migraine without aura, started or worsened since starting CHC. ";
+      if (!state.migChange) extra = "Migraine without aura (whether it started or worsened since starting CHC: not asked). ";
+      flags.push(makeFlag("migraine", "amber", extra + CHECK_PHRASE, "fs-migraine", "callout-migraine"));
+    }
+    CHECKS.forEach(function (item) {
+      if (state.answers[item.name] === "yes") {
+        flags.push(makeFlag(
+          item.name,
+          item.level,
+          item.label + ". " + CHECK_PHRASE,
+          "fs-" + item.name,
+          "callout-" + item.name
+        ));
+      }
+    });
+    return flags;
+  }
+
+  function methodLine(state) {
+    if (!state.method && !state.review) return "Method: not asked";
+    var method = state.method === "coc" ? "COC" : state.method === "patch" ? "patch" : state.method === "ring" ? "ring" : "not asked";
+    var review = state.review === "new" ? "new start" : state.review === "cont" ? "continuation" : "not asked";
+    return "Method: " + method + ", " + review;
+  }
+
+  function ageLine(state) {
+    if (state.age === null) return "Age: not asked";
+    var text = "Age: " + plainNum(state.age);
+    if (state.age < 12 || state.age > 60) text += " - check this figure";
+    return text;
+  }
+
+  function bpLine(state) {
+    if (state.sys === null && state.dia === null && !state.bpSetting) return "BP: not asked";
+    if (state.sys === null || state.dia === null || !state.bpSetting) {
+      return "BP: incomplete - systolic " + (state.sys === null ? "not asked" : plainNum(state.sys)) +
+        ", diastolic " + (state.dia === null ? "not asked" : plainNum(state.dia)) +
+        ", " + settingLabel(state.bpSetting);
+    }
+    var base = plainNum(state.sys) + "/" + plainNum(state.dia) + " (" + settingLabel(state.bpSetting) + ")";
+    if (state.bp.warning) return "BP: " + base + " - figures need checking, stage not shown";
+    if (state.bp.stage === "23") return "BP: " + base + " - NICE stage 2/3";
+    if (state.bp.stage === "1") return "BP: " + base + " - NICE stage 1";
+    return "BP: " + base + " - below NICE stage 1 threshold";
+  }
+
+  function bmiLine(state) {
+    if (!state.bmiMode) return "BMI: not asked";
+    if (state.bmiError) return "BMI: check this figure";
+    if (state.bmi === null) return "BMI: not asked";
+    return "BMI: " + state.bmi.toFixed(1);
+  }
+
+  function smokingLine(state) {
+    if (!state.smoking) return "Smoking: not asked";
+    if (state.smoking === "never") return "Smoking: never";
+    if (state.smoking === "exlt1") return "Smoking: ex-smoker stopped <1 year";
+    if (state.smoking === "exgte1") return "Smoking: ex-smoker stopped >=1 year";
+    if (state.cigs === null) return "Smoking: current, cigarettes/day not asked";
+    return "Smoking: current, " + plainNum(state.cigs) + " cigarettes/day";
+  }
+
+  function vapingLine(state) {
+    if (!state.vaping) return "Vaping: not asked";
+    return "Vaping: " + state.vaping;
+  }
+
+  function migraineLine(state) {
+    if (!state.migraine) return "Migraine: not asked";
+    if (state.migraine === "none") return "Migraine: none";
+    if (state.migraine === "aura") return "Migraine: with aura";
+    return "Migraine: without aura; started or worsened since starting CHC: " + yn(state.migChange);
+  }
+
+  function itemsBlock(flags) {
+    if (!flags.length) return "Items checked against CoSRH UKMEC 2025 tables: none flagged";
+    var lines = ["Items checked against CoSRH UKMEC 2025 tables:"];
+    flags.forEach(function (flag) { lines.push("- " + flag.text); });
+    return lines.join("\n");
+  }
+
+  function buildNote(state, flags) {
+    var lines = [
+      "UKMEC 2025 pill check (checklist " + VERSION + ")",
+      methodLine(state),
+      ageLine(state),
+      bpLine(state) + " | " + bmiLine(state),
+      "Known hypertension (controlled): " + yn(state.htn),
+      smokingLine(state) + " | " + vapingLine(state),
+      migraineLine(state),
+      "VTE personal/family: " + yn(state.answers.vte) + "/" + yn(state.answers.vteFam)
+    ];
+    NOTE_ROWS.forEach(function (row) {
+      lines.push(row[1] + ": " + yn(state.answers[row[0]]));
+    });
+    lines.push(
+      "New 2025 items - CKD: " + yn(state.answers.ckd) +
+      " | Sickle cell trait: " + yn(state.answers.sct) +
+      " | MS: " + yn(state.answers.ms)
+    );
+    lines.push("Mood/anxiety discussed: " + yn(state.mood));
+    lines.push("");
+    lines.push(itemsBlock(flags));
+    if (flags.length >= 2) lines.push(CUMULATIVE);
+    lines.push("");
+    lines.push("Plan: " + (state.plan ? state.plan : "not asked"));
+    return lines.join("\n");
+  }
+
+  function syncChoices() {
+    var labels = document.querySelectorAll(".choice");
+    for (var i = 0; i < labels.length; i++) {
+      var input = labels[i].querySelector("input");
+      labels[i].classList.toggle("is-selected", !!(input && input.checked));
+    }
+  }
+
+  function syncVisibility(state) {
+    $("cigs-wrap").hidden = state.smoking !== "current";
+    $("mig-change-wrap").hidden = state.migraine !== "noaura";
+    $("bmi-direct").hidden = state.bmiMode !== "direct";
+    $("bmi-calc").hidden = state.bmiMode !== "calc";
+    $("fs-bmi").hidden = !state.bmiMode;
+  }
+
+  function clearPaint() {
+    var nodes = document.querySelectorAll(".paintable");
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].classList.remove("is-flag-red", "is-flag-amber", "is-flag-strong");
+    }
+  }
+
+  function clearCallouts() {
+    var nodes = document.querySelectorAll(".callout");
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].hidden = true;
+      nodes[i].textContent = "";
+      nodes[i].className = "callout";
+    }
+  }
+
+  function showNeutral(id, text) {
+    var el = $(id);
+    if (!el) return;
+    el.hidden = false;
+    el.className = "callout callout-neutral";
+    el.textContent = text;
+  }
+
+  function paintAndCallouts(state, flags) {
+    clearPaint();
+    clearCallouts();
+    var paint = {};
+    flags.forEach(function (flag) {
+      if (!paint[flag.target] || rank(flag.level) > rank(paint[flag.target])) {
+        paint[flag.target] = flag.level;
+      }
+    });
+    Object.keys(paint).forEach(function (id) {
+      var node = $(id);
+      if (node) node.classList.add("is-flag-" + paint[id]);
+    });
+    flags.forEach(function (flag) {
+      var el = $(flag.callout);
+      if (!el) return;
+      el.hidden = false;
+      el.className = "callout";
+      var tag = document.createElement("span");
+      tag.className = "flag-tag";
+      tag.textContent = flag.tag;
+      el.appendChild(tag);
+      el.appendChild(document.createTextNode(" " + flag.text));
+    });
+    if (!paint["fs-bp"]) {
+      if (state.bp.warning) {
+        showNeutral("callout-bp", "Check these blood pressure figures. The NICE stage label is not shown.");
+      } else if (state.bp.partial) {
+        showNeutral("callout-bp", "Enter systolic, diastolic, and setting to show a NICE stage label.");
+      } else if (state.bp.stage === "below") {
+        showNeutral("callout-bp", "NICE stage label: below stage 1 threshold.");
+      }
+    }
+    if (state.age !== null && (state.age < 12 || state.age > 60)) {
+      showNeutral("callout-age", "Check this age. It is still written in the note.");
+    }
+    if (state.bmiError) {
+      showNeutral("callout-bmi", state.bmiError);
+    } else if (state.bmi !== null && state.bmi < 30 && state.bmiMode === "calc") {
+      showNeutral("callout-bmi", "Calculated BMI: " + state.bmi.toFixed(1) + ".");
+    } else if (state.bmi !== null && state.bmi < 30 && state.bmiMode === "direct") {
+      showNeutral("callout-bmi", "BMI: " + state.bmi.toFixed(1) + ".");
+    }
+  }
+
+  function renderFlags(flags) {
+    var list = $("flag-list");
+    list.textContent = "";
+    flags.forEach(function (flag) {
+      var li = document.createElement("li");
+      li.className = "flag flag-" + flag.level;
+      var tag = document.createElement("span");
+      tag.className = "flag-tag";
+      tag.textContent = flag.tag;
+      li.appendChild(tag);
+      li.appendChild(document.createTextNode(" " + flag.text));
+      list.appendChild(li);
+    });
+    $("flag-empty").hidden = flags.length > 0;
+    var cumulative = $("cumulative");
+    if (flags.length >= 2) {
+      cumulative.hidden = false;
+      cumulative.textContent = CUMULATIVE;
+    } else {
+      cumulative.hidden = true;
+      cumulative.textContent = "";
+    }
+    var jump = $("flag-jump");
+    var hasRed = flags.some(function (flag) { return flag.level === "red"; });
+    var hasAmber = flags.some(function (flag) { return flag.level !== "red"; });
+    jump.className = "flag-jump" + (hasRed ? " is-red" : hasAmber ? " is-amber" : "");
+    if (!flags.length) jump.textContent = "Items to check: none flagged";
+    else if (flags.length >= 2) jump.textContent = "Items to check: " + flags.length + " — multiple risk factors";
+    else jump.textContent = "Items to check: " + flags.length;
+  }
+
+  function setAnnounce(msg) {
+    var el = $("flag-announcer");
+    el.textContent = "";
+    window.setTimeout(function () { el.textContent = msg; }, 30);
+  }
+
+  function announce(flags, mode) {
+    var sig = flags.map(function (flag) { return flag.id + ":" + flag.level; }).join("|");
+    if (mode === "reset") {
+      lastSig = sig;
+      setAnnounce("All answers cleared. No items flagged.");
+      return;
+    }
+    if (lastSig === null) {
+      lastSig = sig;
+      return;
+    }
+    if (sig === lastSig) return;
+    var prev = lastSig ? lastSig.split("|") : [];
+    var added = flags.filter(function (flag) { return prev.indexOf(flag.id + ":" + flag.level) === -1; });
+    var removed = prev.filter(function (part) {
+      return flags.every(function (flag) { return (flag.id + ":" + flag.level) !== part; });
+    });
+    var msg = "";
+    if (!flags.length) msg = "No items flagged.";
+    else if (added.length) msg = added.map(function (flag) { return flag.tag + " " + flag.text; }).join(" ");
+    else if (removed.length) msg = "Highlight cleared. Items to check: " + flags.length + ".";
+    if (flags.length >= 2 && prev.length < 2) msg += (msg ? " " : "") + CUMULATIVE;
+    if (flags.length < 2 && prev.length >= 2) msg += (msg ? " " : "") + "Cumulative risk notice cleared.";
+    lastSig = sig;
+    if (msg) setAnnounce(msg);
+  }
+
+  function setStatus(msg) {
+    var el = $("copy-status");
+    el.textContent = msg;
+    el.hidden = !msg;
+  }
+
+  function render(mode) {
+    try {
+      var state = readState();
+      var flags = buildFlags(state);
+      syncVisibility(state);
+      syncChoices();
+      paintAndCallouts(state, flags);
+      renderFlags(flags);
+      $("note").value = buildNote(state, flags);
+      announce(flags, mode || "");
+    } catch (err) {
+      $("note").value = "The note could not be updated because of a page error. Refresh the page and enter the answers again. Nothing was saved.";
+      setStatus("Page error. Refresh and start again.");
+      if (window.console && console.error) console.error(err);
+    }
+  }
+
+  function showCopied() {
+    var btn = $("copy-btn");
+    btn.textContent = "Copied";
+    setStatus("Copied");
+    window.clearTimeout(copiedTimer);
+    copiedTimer = window.setTimeout(function () {
+      btn.textContent = "Copy note";
+      setStatus("");
+    }, 2500);
+  }
+
+  function selectNote() {
+    var note = $("note");
+    note.focus();
+    note.removeAttribute("readonly");
+    note.select();
+    note.setSelectionRange(0, note.value.length);
+    note.setAttribute("readonly", "readonly");
+  }
+
+  function execCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.top = "0";
+    ta.style.left = "0";
+    ta.style.width = "2em";
+    ta.style.height = "2em";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    var ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch (err) {
+      ok = false;
+    }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyNote() {
+    var text = $("note").value;
+    window.clearTimeout(copiedTimer);
+    if (execCopy(text)) {
+      showCopied();
+      return;
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showCopied).catch(function () {
+        selectNote();
+        setStatus("Clipboard unavailable. The note is selected - press Ctrl+C.");
+      });
+      return;
+    }
+    selectNote();
+    setStatus("Clipboard unavailable. The note is selected - press Ctrl+C.");
+  }
+
+  function resetForm() {
+    if (!window.confirm("Clear all answers and the note?")) return;
+    document.getElementById("check-form").reset();
+    setStatus("");
+    $("copy-btn").textContent = "Copy note";
+    render("reset");
+    $("method-heading").focus();
+  }
+
+  var form = $("check-form");
+  form.addEventListener("submit", function (e) { e.preventDefault(); });
+  form.addEventListener("input", function () { render(); });
+  form.addEventListener("change", function () { render(); });
+  $("copy-btn").addEventListener("click", copyNote);
+  $("reset-btn").addEventListener("click", resetForm);
+
+  var numbers = document.querySelectorAll('input[type="number"]');
+  for (var i = 0; i < numbers.length; i++) {
+    numbers[i].addEventListener("wheel", function (e) {
+      if (document.activeElement === e.currentTarget) e.preventDefault();
+    }, { passive: false });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
