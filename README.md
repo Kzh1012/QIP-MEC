@@ -8,7 +8,7 @@ Open `index.html` in Edge or Chrome. The page is one file, with CSS and JavaScri
 
 ## What it does
 
-- Records method, review type, age, blood pressure, BMI, smoking, vaping, migraine, a yes/no history list, mood discussion, and a free-text plan.
+- Records method, review type, age, blood pressure, BMI, smoking, vaping, migraine, a yes/no history list, and mood discussion.
 - Shows a live **Items to check** list. Every highlight says to check the CoSRH UKMEC 2025 table.
 - Writes blank items as **not asked**, so an untouched question is not pasted as “No”.
 - Copies the note with the clipboard. If the browser blocks that (common when the file is opened from a folder), the note is selected for Ctrl+C.

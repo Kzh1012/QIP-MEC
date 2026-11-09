@@ -300,8 +300,6 @@
     overflow-wrap: anywhere;
   }
 
-  #plan { min-height: 96px; overflow-wrap: anywhere; }
-
   .actions-bar {
     position: fixed;
     left: 0;
@@ -759,9 +757,7 @@
 
     <section class="card" aria-labelledby="note-heading">
       <h2 id="note-heading">Consultation note</h2>
-      <label for="plan">Plan</label>
-      <textarea id="plan" name="plan" rows="3" spellcheck="true"></textarea>
-      <p class="hint">The plan is included at the end of the note. Edit it here. The preview matches the answers above.</p>
+      <p class="hint">This preview matches the answers above.</p>
       <label for="note">Plain-text note</label>
       <textarea id="note" readonly spellcheck="false" aria-readonly="true"></textarea>
     </section>
@@ -954,8 +950,7 @@
       migraine: radio("migraine"),
       migChange: radio("migChange"),
       answers: answers,
-      mood: radio("mood"),
-      plan: $("plan").value.trim()
+      mood: radio("mood")
     };
   }
 
@@ -1153,8 +1148,6 @@
     lines.push("");
     lines.push(itemsBlock(flags));
     if (flags.length >= 2) lines.push(CUMULATIVE);
-    lines.push("");
-    lines.push("Plan: " + (state.plan ? state.plan : "not asked"));
     return lines.join("\n");
   }
 
