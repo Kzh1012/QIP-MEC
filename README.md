@@ -8,10 +8,10 @@ Open `index.html` in Edge or Chrome. The page is one file, with CSS and JavaScri
 
 ## What it does
 
-- Records method, review type, age, blood pressure, BMI, smoking, vaping, migraine, a yes/no history list, mood discussion, and a free-text plan.
+- Records method, review type, age, blood pressure, BMI, smoking, vaping, migraine, a yes/no history list, and mood discussion.
 - Shows a live **Items to check** list. Every highlight says to check the CoSRH UKMEC 2025 table.
-- Age, blood pressure, BMI, smoking, vaping, and migraine are core items. If any are blank, the note ends the clinical section with `INCOMPLETE - not recorded: ...` and an amber warning sits next to Copy. `Flags: none` is used only when those six are answered and nothing is highlighted.
-- Other blank items are left out of the note. When every history condition is No, the note uses one line. Yes answers are listed on their own.
+- Age, blood pressure, BMI, smoking, vaping, and migraine are core items. If any are blank, the note puts `INCOMPLETE - not recorded: ...` on the line under the heading, and an amber warning sits next to Copy. `Flags: none` is used only when those six are answered and nothing is highlighted. The method line is always present.
+- Other blank items are left out of the note. Every history condition answered No is named on one line, unless all of them are No, in which case the note uses one summary line. Yes answers are listed on their own. A count above Copy shows how many risk factors are not yet asked.
 - **Mark remaining risk factors as No (asked and none)** fills only the unanswered history conditions.
 - Copies the note with the clipboard. If the browser blocks that (common when the file is opened from a folder), the note is selected for Ctrl+C.
 - Clears the page with **Reset**.

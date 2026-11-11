@@ -33,8 +33,8 @@
     color: var(--text);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
-    line-height: 1.5;
-    padding-bottom: 9rem;
+    line-height: 1.45;
+    padding-bottom: 17.5rem;
   }
 
   .skip {
@@ -55,7 +55,7 @@
     color: var(--text);
     border-bottom: 4px solid var(--amber-edge);
     padding: 12px 16px;
-    font-size: 1.125rem;
+    font-size: 1.0625rem;
   }
 
   .banner p { margin: 0 0 8px; }
@@ -69,7 +69,7 @@
   .masthead {
     background: var(--blue);
     color: #fff;
-    padding: 20px 16px;
+    padding: 16px 16px 18px;
   }
 
   .masthead h1 {
@@ -81,7 +81,8 @@
   .masthead p { margin: 4px 0 0; }
 
   .flag-jump {
-    display: block;
+    display: flex;
+    align-items: center;
     position: sticky;
     top: 0;
     z-index: 3;
@@ -89,7 +90,7 @@
     color: #fff;
     text-decoration: none;
     font-weight: 700;
-    padding: 12px 16px;
+    padding: 10px 16px;
     min-height: 48px;
   }
 
@@ -99,30 +100,36 @@
   main {
     max-width: 1120px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 20px 16px 8px;
   }
 
-  .lead { margin: 0 0 16px; }
+  .lead {
+    max-width: 68ch;
+    margin: 0 0 20px;
+  }
 
   .layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    gap: 20px;
     align-items: start;
   }
 
   .layout > * { min-width: 0; }
 
   .card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     background: #fff;
     border: 1px solid var(--line);
-    padding: 16px;
-    margin-bottom: 16px;
-    scroll-margin-top: 60px;
+    padding: 16px 16px 18px;
+    margin-bottom: 12px;
+    scroll-margin-top: 64px;
   }
 
   .card h2, .summary h2 {
-    margin: 0 0 12px;
+    margin: 0;
     padding-bottom: 8px;
     border-bottom: 2px solid var(--blue);
     color: var(--blue);
@@ -130,14 +137,20 @@
     line-height: 1.3;
   }
 
-  .hint { margin: 0 0 12px; color: var(--muted); }
+  .hint { margin: 0; color: var(--muted); }
 
   fieldset {
     border: 0;
-    margin: 0 0 12px;
-    padding: 12px;
+    margin: 0;
+    padding: 8px 4px 8px 10px;
     min-width: 0;
-    border-left: 6px solid transparent;
+    border-left: 4px solid transparent;
+  }
+
+  fieldset fieldset {
+    margin-top: 12px;
+    padding: 0;
+    border-left-width: 0;
   }
 
   legend {
@@ -152,14 +165,14 @@
   .paintable.is-flag-strong { background: var(--strong-bg); border-left-color: var(--strong-edge); }
   .paintable.is-flag-red { background: var(--red-bg); border-left-color: var(--red-edge); }
 
-  label { display: block; font-weight: 700; margin-bottom: 4px; }
+  label { display: block; font-weight: 700; margin-bottom: 6px; }
 
   .choice {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     min-height: 48px;
-    padding: 12px;
+    padding: 8px 12px;
     border: 2px solid var(--muted);
     background: #fff;
     color: var(--text);
@@ -205,32 +218,39 @@
     min-height: 48px;
     padding: 8px 12px;
     width: 100%;
-    max-width: 16rem;
+    max-width: 12rem;
   }
 
   textarea { max-width: none; resize: vertical; }
 
   .pair {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+    max-width: 28rem;
   }
 
-  .callout { margin: 12px 0 0; font-weight: 700; }
+  .pair input[type="number"] { max-width: none; }
+
+  #cigs-wrap,
+  #bmi-direct,
+  #bmi-calc { margin-top: 12px; }
+
+  .callout { margin: 10px 0 0; font-weight: 700; }
   .callout-neutral {
     font-weight: 400;
     background: #e8edee;
-    border-left: 6px solid var(--muted);
+    border-left: 4px solid var(--muted);
     padding: 12px;
   }
 
   .flag-tag { font-weight: 700; }
 
   .info {
-    margin: 12px 0 0;
-    padding: 12px;
+    margin: 10px 0 0;
+    padding: 10px 12px;
     background: #e8f4fc;
-    border-left: 6px solid var(--blue);
+    border-left: 4px solid var(--blue);
   }
 
   .badge {
@@ -246,18 +266,26 @@
   }
 
   .new-group {
-    margin-top: 8px;
-    padding-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 4px;
+    padding-top: 14px;
     border-top: 2px solid var(--blue);
   }
 
   .new-group h3 {
-    margin: 12px 0;
+    margin: 0;
     font-size: 1.125rem;
     color: var(--blue);
   }
 
-  details { margin-top: 8px; }
+  details { margin-top: 10px; }
+
+  details p,
+  details ul { margin: 8px 0 0; }
+
+  details li + li { margin-top: 4px; }
 
   summary {
     min-height: 48px;
@@ -271,7 +299,7 @@
   .summary {
     position: sticky;
     top: 56px;
-    max-height: calc(100vh - 56px - 8.5rem);
+    max-height: calc(100vh - 56px - 9.5rem);
     overflow: auto;
   }
 
@@ -279,9 +307,11 @@
 
   .flag {
     margin: 0 0 8px;
-    padding: 12px;
-    border-left: 6px solid transparent;
+    padding: 10px 12px;
+    border-left: 4px solid transparent;
   }
+
+  .flag:last-child { margin-bottom: 0; }
 
   .flag-amber { background: var(--amber-bg); border-left-color: var(--amber-edge); }
   .flag-strong { background: var(--strong-bg); border-left-color: var(--strong-edge); }
@@ -289,14 +319,14 @@
 
   .cumulative {
     background: #e8f4fc;
-    border-left: 6px solid var(--blue);
-    padding: 12px;
+    border-left: 4px solid var(--blue);
+    padding: 10px 12px;
     font-weight: 700;
-    margin: 0 0 12px;
+    margin: 0;
   }
 
   #note {
-    min-height: 320px;
+    min-height: 9rem;
     overflow-wrap: anywhere;
   }
 
@@ -308,12 +338,12 @@
     z-index: 4;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px 12px;
     align-items: center;
     background: #fff;
     border-top: 4px solid var(--blue);
-    box-shadow: 0 -2px 8px rgba(33, 43, 50, 0.15);
-    padding: 12px 16px;
+    box-shadow: 0 -2px 8px rgba(33, 43, 50, 0.12);
+    padding: 10px 16px 12px;
   }
 
   button {
@@ -350,12 +380,18 @@
     color: var(--blue-dark);
   }
 
+  .unasked-count {
+    flex: 1 1 100%;
+    margin: 0;
+    font-weight: 700;
+  }
+
   .core-warning {
     flex: 1 1 16rem;
     margin: 0;
     padding: 8px 12px;
     background: var(--amber-bg);
-    border-left: 6px solid var(--amber-edge);
+    border-left: 4px solid var(--amber-edge);
     color: var(--text);
     font-weight: 700;
   }
@@ -363,7 +399,7 @@
   #mark-no-btn {
     display: block;
     width: 100%;
-    margin: 4px 0 8px;
+    margin: 4px 0 0;
     background: #fff;
     color: var(--blue);
     border: 2px solid var(--blue);
@@ -375,7 +411,8 @@
   .site-footer {
     background: #fff;
     border-top: 4px solid var(--blue);
-    padding: 16px;
+    padding: 16px 16px 12px;
+    margin-top: 8px;
     color: var(--text);
   }
 
@@ -414,13 +451,27 @@
   }
 
   @media (max-width: 400px) {
-    main { padding: 12px; }
-    .card { padding: 12px; }
+    main { padding: 16px 12px 4px; }
+    .card { padding: 14px 12px 16px; }
     .choices.fit .choice { flex-basis: 100%; }
+    .pair { max-width: none; }
   }
 
-  @media (min-width: 700px) {
+  @media (min-width: 720px) {
+    body { padding-bottom: 9rem; }
     .masthead h1 { font-size: 1.75rem; }
+    .choices.stack .choice {
+      flex-basis: calc(50% - 8px);
+      max-width: calc(50% - 4px);
+    }
+    .banner,
+    .masthead,
+    .flag-jump,
+    .site-footer,
+    .actions-bar {
+      padding-left: max(16px, calc((100% - 1120px) / 2 + 16px));
+      padding-right: max(16px, calc((100% - 1120px) / 2 + 16px));
+    }
   }
 </style>
 </head>
@@ -790,9 +841,7 @@
 
     <section class="card" aria-labelledby="note-heading">
       <h2 id="note-heading">Consultation note</h2>
-      <label for="plan">Plan</label>
-      <textarea id="plan" name="plan" rows="3" spellcheck="true"></textarea>
-      <p class="hint">The plan is the last line of the note. This preview matches the answers above.</p>
+      <p class="hint">This preview matches the answers above.</p>
       <label for="note">Plain-text note</label>
       <textarea id="note" readonly spellcheck="false" aria-readonly="true"></textarea>
     </section>
@@ -800,6 +849,7 @@
 </main>
 
 <div class="actions-bar">
+  <p id="unasked-count" class="unasked-count" hidden></p>
   <button type="button" id="copy-btn">Copy note</button>
   <p id="core-warning" class="core-warning" hidden></p>
   <button type="button" id="reset-btn">Reset</button>
@@ -827,22 +877,22 @@
   var CUMULATIVE = "Multiple risk factors present - UKMEC 2025 advises clinical judgement on cumulative risk";
 
   var CHECKS = [
-    { name: "vte", label: "Personal history of VTE", level: "red" },
-    { name: "vteFam", label: "First-degree relative with VTE", level: "amber" },
-    { name: "thromb", label: "Known thrombogenic mutation or antiphospholipid antibodies", level: "amber" },
-    { name: "immob", label: "Immobility", level: "amber" },
-    { name: "cvd", label: "Stroke/TIA or ischaemic heart disease", level: "amber" },
-    { name: "cvrisk", label: "Multiple cardiovascular risk factors", level: "amber" },
-    { name: "dm", label: "Diabetes with complications", level: "amber" },
-    { name: "breast", label: "Breast cancer (current or past)", level: "amber" },
-    { name: "liver", label: "Liver disease or liver tumour", level: "amber" },
-    { name: "sle", label: "SLE", level: "amber" },
-    { name: "valve", label: "Complicated valvular heart disease", level: "amber" },
-    { name: "pp", label: "Postpartum <6 weeks", level: "amber" },
-    { name: "enzyme", label: "Enzyme-inducing drugs", level: "amber" },
-    { name: "ckd", label: "Chronic kidney disease (new in UKMEC 2025)", level: "amber" },
-    { name: "sct", label: "Sickle cell trait (new in UKMEC 2025)", level: "amber" },
-    { name: "ms", label: "Multiple sclerosis (new in UKMEC 2025)", level: "amber" }
+    { name: "vte", label: "Personal history of VTE", short: "Personal VTE", level: "red" },
+    { name: "vteFam", label: "First-degree relative with VTE", short: "Family VTE", level: "amber" },
+    { name: "thromb", label: "Known thrombogenic mutation or antiphospholipid antibodies", short: "Thrombogenic mutation/APS", level: "amber" },
+    { name: "immob", label: "Immobility", short: "Immobility", level: "amber" },
+    { name: "cvd", label: "Stroke/TIA or ischaemic heart disease", short: "Stroke/TIA/IHD", level: "amber" },
+    { name: "cvrisk", label: "Multiple cardiovascular risk factors", short: "Multiple CV risk factors", level: "amber" },
+    { name: "dm", label: "Diabetes with complications", short: "Diabetes with complications", level: "amber" },
+    { name: "breast", label: "Breast cancer (current or past)", short: "Breast cancer", level: "amber" },
+    { name: "liver", label: "Liver disease or liver tumour", short: "Liver disease/tumour", level: "amber" },
+    { name: "sle", label: "SLE", short: "SLE", level: "amber" },
+    { name: "valve", label: "Complicated valvular heart disease", short: "Complicated valvular heart disease", level: "amber" },
+    { name: "pp", label: "Postpartum <6 weeks", short: "Postpartum <6 weeks", level: "amber" },
+    { name: "enzyme", label: "Enzyme-inducing drugs", short: "Enzyme-inducing drugs", level: "amber" },
+    { name: "ckd", label: "Chronic kidney disease (new in UKMEC 2025)", short: "CKD", level: "amber" },
+    { name: "sct", label: "Sickle cell trait (new in UKMEC 2025)", short: "Sickle cell trait", level: "amber" },
+    { name: "ms", label: "Multiple sclerosis (new in UKMEC 2025)", short: "MS", level: "amber" }
   ];
 
   var lastSig = null;
@@ -967,8 +1017,7 @@
       migChange: radio("migChange"),
       altChc: radio("altChc"),
       answers: answers,
-      mood: radio("mood"),
-      plan: $("plan").value.trim()
+      mood: radio("mood")
     };
   }
 
@@ -1068,7 +1117,7 @@
         flags.push(makeFlag(
           item.name,
           item.level,
-          item.label + ". " + CHECK_PHRASE,
+          item.label.replace(" (new in UKMEC 2025)", "") + ". " + CHECK_PHRASE,
           "fs-" + item.name,
           "callout-" + item.name
         ));
@@ -1082,6 +1131,7 @@
     if (state.method === "coc") parts.push("COC");
     else if (state.method === "patch") parts.push("patch");
     else if (state.method === "ring") parts.push("ring");
+    else parts.push("not recorded");
     if (state.review === "new") parts.push("new start");
     else if (state.review === "cont") parts.push("continuation");
     if (state.age !== null) {
@@ -1089,7 +1139,7 @@
       if (state.age < 12 || state.age > 60) age += " (check this figure)";
       parts.push(age);
     }
-    return parts.join(", ");
+    return "Method: " + parts.join(", ");
   }
 
   function bpText(state) {
@@ -1149,24 +1199,30 @@
     return "INCOMPLETE - not recorded: " + missing.join(", ");
   }
 
-  function checklistLines(state) {
+  function splitChecks(state) {
     var yesLines = [];
-    var allNo = true;
+    var noNames = [];
+    var unanswered = 0;
     CHECKS.forEach(function (item) {
       var value = state.answers[item.name];
-      if (value !== "yes" && value !== "no") {
-        allNo = false;
-        return;
-      }
       if (value === "yes") {
-        allNo = false;
         yesLines.push(item.label.replace(" (new in UKMEC 2025)", "") + ": Yes");
+      } else if (value === "no") {
+        noNames.push(item.short);
+      } else {
+        unanswered += 1;
       }
     });
-    if (allNo) {
+    return { yesLines: yesLines, noNames: noNames, unanswered: unanswered };
+  }
+
+  function checklistLines(split) {
+    if (split.noNames.length === CHECKS.length) {
       return ["Other UKMEC risk factors asked (incl. new 2025: CKD, sickle cell trait, MS): none"];
     }
-    return yesLines;
+    var lines = split.yesLines.slice();
+    if (split.noNames.length) lines.push("No history of: " + split.noNames.join(", "));
+    return lines;
   }
 
   function flagsBlock(flags, missing) {
@@ -1175,16 +1231,17 @@
       lines.push("Flags:");
       flags.forEach(function (flag) { lines.push("- " + flag.text); });
       if (flags.length >= 2) lines.push(CUMULATIVE);
+    } else if (!missing.length) {
+      lines.push("Flags: none");
     }
-    if (missing.length) lines.push(incompleteLine(missing));
-    else if (!flags.length) lines.push("Flags: none");
     return lines.join("\n");
   }
 
   function buildNote(state, flags) {
     var lines = ["UKMEC 2025 pill check (checklist " + VERSION + ")"];
-    var identity = identityLine(state);
-    if (identity) lines.push(identity);
+    var missing = missingCore(state);
+    if (missing.length) lines.push(incompleteLine(missing));
+    lines.push(identityLine(state));
     var measures = [bpText(state), bmiText(state)].filter(Boolean).join(" | ");
     if (measures) lines.push(measures);
     var habits = habitsLine(state);
@@ -1197,12 +1254,12 @@
     if (state.htn === "yes" || state.htn === "no") {
       lines.push("Known hypertension (controlled): " + (state.htn === "yes" ? "Yes" : "No"));
     }
-    checklistLines(state).forEach(function (line) { lines.push(line); });
+    checklistLines(splitChecks(state)).forEach(function (line) { lines.push(line); });
     if (state.mood === "yes" || state.mood === "no") {
       lines.push("Mood/anxiety discussed: " + (state.mood === "yes" ? "Yes" : "No"));
     }
-    lines.push(flagsBlock(flags, missingCore(state)));
-    lines.push(state.plan ? "Plan: " + state.plan : "Plan:");
+    var flagText = flagsBlock(flags, missing);
+    if (flagText) lines.push(flagText);
     return lines.join("\n");
   }
 
@@ -1371,6 +1428,17 @@
       paintAndCallouts(state, flags);
       renderFlags(flags);
       var missing = missingCore(state);
+      var unasked = $("unasked-count");
+      var unanswered = splitChecks(state).unanswered;
+      if (unanswered) {
+        unasked.hidden = false;
+        unasked.textContent = unanswered === 1
+          ? "1 risk factor not yet asked"
+          : unanswered + " risk factors not yet asked";
+      } else {
+        unasked.hidden = true;
+        unasked.textContent = "";
+      }
       var warning = $("core-warning");
       if (missing.length) {
         warning.hidden = false;
