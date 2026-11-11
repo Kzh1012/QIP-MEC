@@ -350,6 +350,28 @@
     color: var(--blue-dark);
   }
 
+  .core-warning {
+    flex: 1 1 16rem;
+    margin: 0;
+    padding: 8px 12px;
+    background: var(--amber-bg);
+    border-left: 6px solid var(--amber-edge);
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  #mark-no-btn {
+    display: block;
+    width: 100%;
+    margin: 4px 0 8px;
+    background: #fff;
+    color: var(--blue);
+    border: 2px solid var(--blue);
+    text-align: left;
+  }
+
+  #mark-no-btn:hover { background: #e8f4fc; }
+
   .site-footer {
     background: #fff;
     border-top: 4px solid var(--blue);
@@ -412,13 +434,13 @@
 
 <header class="masthead">
   <h1>UKMEC 2025 pill check</h1>
-  <p>Combined hormonal contraception (pill, patch, or ring). Checklist v1.0.</p>
+  <p>Combined hormonal contraception (pill, patch, or ring). Checklist v1.1.</p>
 </header>
 
 <a class="flag-jump" id="flag-jump" href="#flags">Items to check: none flagged</a>
 
 <main id="content">
-  <p class="lead">Record the review, then copy the note into EMIS. Blank items are written as “not asked”. Highlights mean the answer should be checked in the CoSRH UKMEC 2025 tables. This page does not give a UKMEC category or a yes/no decision. Nothing is saved in the browser.</p>
+  <p class="lead">Record the review, then copy the note into EMIS. Age, blood pressure, BMI, smoking, vaping, and migraine are needed for a complete note. Other blank items are left out. Highlights mean the answer should be checked in the CoSRH UKMEC 2025 tables. This page does not give a UKMEC category or a yes/no decision. Nothing is saved in the browser.</p>
 
   <form id="check-form" autocomplete="off" autocapitalize="off">
     <div class="layout">
@@ -551,6 +573,15 @@
               <label class="choice"><input type="radio" name="vaping" value="never"> <span>Never</span></label>
               <label class="choice"><input type="radio" name="vaping" value="ex"> <span>Ex</span></label>
               <label class="choice"><input type="radio" name="vaping" value="current"> <span>Current</span></label>
+            </div>
+            <div id="alt-chc-wrap" hidden>
+              <fieldset>
+                <legend>Alternatives to CHC discussed</legend>
+                <div class="choices">
+                  <label class="choice"><input type="radio" name="altChc" value="yes"> <span>Yes</span></label>
+                  <label class="choice"><input type="radio" name="altChc" value="no"> <span>No</span></label>
+                </div>
+              </fieldset>
             </div>
             <p id="callout-vaping" class="callout" hidden></p>
           </fieldset>
@@ -730,6 +761,8 @@
               <p id="callout-ms" class="callout" hidden></p>
             </fieldset>
           </div>
+          <button type="button" id="mark-no-btn">Mark remaining risk factors as No (asked and none)</button>
+          <p class="hint">This sets only unanswered conditions in this section to No. Answers already given stay as they are.</p>
         </section>
 
         <section class="card">
@@ -751,13 +784,15 @@
         <p id="cumulative" class="cumulative" hidden></p>
         <ul id="flag-list" class="flag-list"></ul>
         <p id="flag-empty">No items flagged.</p>
-        <p class="hint">Questions left blank appear as “not asked” in the note.</p>
+        <p class="hint">Age, BP, BMI, smoking, vaping, and migraine left blank are listed as not recorded. Other blank items are left out of the note.</p>
       </aside>
     </div>
 
     <section class="card" aria-labelledby="note-heading">
       <h2 id="note-heading">Consultation note</h2>
-      <p class="hint">This preview matches the answers above.</p>
+      <label for="plan">Plan</label>
+      <textarea id="plan" name="plan" rows="3" spellcheck="true"></textarea>
+      <p class="hint">The plan is the last line of the note. This preview matches the answers above.</p>
       <label for="note">Plain-text note</label>
       <textarea id="note" readonly spellcheck="false" aria-readonly="true"></textarea>
     </section>
@@ -766,12 +801,13 @@
 
 <div class="actions-bar">
   <button type="button" id="copy-btn">Copy note</button>
+  <p id="core-warning" class="core-warning" hidden></p>
   <button type="button" id="reset-btn">Reset</button>
   <p id="copy-status" role="status" hidden></p>
 </div>
 
 <footer class="site-footer">
-  <p>Checklist v1.0</p>
+  <p>Checklist v1.1</p>
   <p>Last reviewed: 3 November 2026</p>
   <p>Author: [name], GP trainee</p>
 </footer>
@@ -786,7 +822,7 @@
 (function () {
   "use strict";
 
-  var VERSION = "v1.0";
+  var VERSION = "v1.1";
   var CHECK_PHRASE = "Relevant to UKMEC 2025 - check CoSRH table.";
   var CUMULATIVE = "Multiple risk factors present - UKMEC 2025 advises clinical judgement on cumulative risk";
 
@@ -807,20 +843,6 @@
     { name: "ckd", label: "Chronic kidney disease (new in UKMEC 2025)", level: "amber" },
     { name: "sct", label: "Sickle cell trait (new in UKMEC 2025)", level: "amber" },
     { name: "ms", label: "Multiple sclerosis (new in UKMEC 2025)", level: "amber" }
-  ];
-
-  var NOTE_ROWS = [
-    ["thromb", "Thrombogenic mutation or antiphospholipid antibodies"],
-    ["immob", "Immobility"],
-    ["cvd", "Stroke/TIA or ischaemic heart disease"],
-    ["cvrisk", "Multiple cardiovascular risk factors"],
-    ["dm", "Diabetes with complications"],
-    ["breast", "Breast cancer (current or past)"],
-    ["liver", "Liver disease or liver tumour"],
-    ["sle", "SLE"],
-    ["valve", "Complicated valvular heart disease"],
-    ["pp", "Postpartum <6 weeks"],
-    ["enzyme", "Enzyme-inducing drugs"]
   ];
 
   var lastSig = null;
@@ -850,12 +872,6 @@
   function plainNum(n) {
     if (Math.abs(n - Math.round(n)) < 1e-9) return String(Math.round(n));
     return String(round1(n));
-  }
-
-  function yn(value) {
-    if (value === "yes") return "Yes";
-    if (value === "no") return "No";
-    return "not asked";
   }
 
   function tagFor(level) {
@@ -949,8 +965,10 @@
       vaping: radio("vaping"),
       migraine: radio("migraine"),
       migChange: radio("migChange"),
+      altChc: radio("altChc"),
       answers: answers,
-      mood: radio("mood")
+      mood: radio("mood"),
+      plan: $("plan").value.trim()
     };
   }
 
@@ -960,14 +978,12 @@
     if (state.age !== null && state.age >= 35) {
       ageBit = " aged 35 or over";
       level = "strong";
-    } else if (state.age === null) {
-      ageBit = " (age not asked)";
     }
     if (state.smoking === "current") {
-      var cig = state.cigs === null ? "cigarettes per day not asked" : plainNum(state.cigs) + " cigarettes/day";
+      var cig = state.cigs === null ? "" : " (" + plainNum(state.cigs) + " cigarettes/day)";
       return {
         level: level,
-        text: "Current smoker" + ageBit + " (" + cig + "). " + CHECK_PHRASE
+        text: "Current smoker" + ageBit + cig + ". " + CHECK_PHRASE
       };
     }
     return {
@@ -1045,7 +1061,6 @@
     } else if (state.migraine === "noaura") {
       var extra = "Migraine without aura. ";
       if (state.migChange === "yes") extra = "Migraine without aura, started or worsened since starting CHC. ";
-      if (!state.migChange) extra = "Migraine without aura (whether it started or worsened since starting CHC: not asked). ";
       flags.push(makeFlag("migraine", "amber", extra + CHECK_PHRASE, "fs-migraine", "callout-migraine"));
     }
     CHECKS.forEach(function (item) {
@@ -1062,92 +1077,132 @@
     return flags;
   }
 
-  function methodLine(state) {
-    if (!state.method && !state.review) return "Method: not asked";
-    var method = state.method === "coc" ? "COC" : state.method === "patch" ? "patch" : state.method === "ring" ? "ring" : "not asked";
-    var review = state.review === "new" ? "new start" : state.review === "cont" ? "continuation" : "not asked";
-    return "Method: " + method + ", " + review;
-  }
-
-  function ageLine(state) {
-    if (state.age === null) return "Age: not asked";
-    var text = "Age: " + plainNum(state.age);
-    if (state.age < 12 || state.age > 60) text += " - check this figure";
-    return text;
-  }
-
-  function bpLine(state) {
-    if (state.sys === null && state.dia === null && !state.bpSetting) return "BP: not asked";
-    if (state.sys === null || state.dia === null || !state.bpSetting) {
-      return "BP: incomplete - systolic " + (state.sys === null ? "not asked" : plainNum(state.sys)) +
-        ", diastolic " + (state.dia === null ? "not asked" : plainNum(state.dia)) +
-        ", " + settingLabel(state.bpSetting);
+  function identityLine(state) {
+    var parts = [];
+    if (state.method === "coc") parts.push("COC");
+    else if (state.method === "patch") parts.push("patch");
+    else if (state.method === "ring") parts.push("ring");
+    if (state.review === "new") parts.push("new start");
+    else if (state.review === "cont") parts.push("continuation");
+    if (state.age !== null) {
+      var age = "age " + plainNum(state.age);
+      if (state.age < 12 || state.age > 60) age += " (check this figure)";
+      parts.push(age);
     }
-    var base = plainNum(state.sys) + "/" + plainNum(state.dia) + " (" + settingLabel(state.bpSetting) + ")";
-    if (state.bp.warning) return "BP: " + base + " - figures need checking, stage not shown";
-    if (state.bp.stage === "23") return "BP: " + base + " - NICE stage 2/3";
-    if (state.bp.stage === "1") return "BP: " + base + " - NICE stage 1";
-    return "BP: " + base + " - below NICE stage 1 threshold";
+    return parts.join(", ");
   }
 
-  function bmiLine(state) {
-    if (!state.bmiMode) return "BMI: not asked";
-    if (state.bmiError) return "BMI: check this figure";
-    if (state.bmi === null) return "BMI: not asked";
-    return "BMI: " + state.bmi.toFixed(1);
+  function bpText(state) {
+    if (state.sys === null || state.dia === null || !state.bpSetting) return "";
+    var stage = "normal";
+    if (state.bp.warning) stage = "figures need checking";
+    else if (state.bp.stage === "23") stage = "NICE stage 2/3";
+    else if (state.bp.stage === "1") stage = "NICE stage 1";
+    return "BP " + plainNum(state.sys) + "/" + plainNum(state.dia) + " (" + settingLabel(state.bpSetting) + ", " + stage + ")";
   }
 
-  function smokingLine(state) {
-    if (!state.smoking) return "Smoking: not asked";
+  function bmiText(state) {
+    if (state.bmi === null) return "";
+    return "BMI " + state.bmi.toFixed(1);
+  }
+
+  function smokingText(state) {
+    if (!state.smoking) return "";
     if (state.smoking === "never") return "Smoking: never";
     if (state.smoking === "exlt1") return "Smoking: ex-smoker stopped <1 year";
     if (state.smoking === "exgte1") return "Smoking: ex-smoker stopped >=1 year";
-    if (state.cigs === null) return "Smoking: current, cigarettes/day not asked";
+    if (state.cigs === null) return "Smoking: current";
     return "Smoking: current, " + plainNum(state.cigs) + " cigarettes/day";
   }
 
-  function vapingLine(state) {
-    if (!state.vaping) return "Vaping: not asked";
-    return "Vaping: " + state.vaping;
+  function habitsLine(state) {
+    var parts = [];
+    var smoking = smokingText(state);
+    if (smoking) parts.push(smoking);
+    if (state.vaping) parts.push("Vaping: " + state.vaping);
+    return parts.join(" | ");
   }
 
-  function migraineLine(state) {
-    if (!state.migraine) return "Migraine: not asked";
+  function migraineText(state) {
+    if (!state.migraine) return "";
     if (state.migraine === "none") return "Migraine: none";
     if (state.migraine === "aura") return "Migraine: with aura";
-    return "Migraine: without aura; started or worsened since starting CHC: " + yn(state.migChange);
+    var line = "Migraine: without aura";
+    if (state.migChange === "yes" || state.migChange === "no") {
+      line += "; started or worsened since starting CHC: " + (state.migChange === "yes" ? "Yes" : "No");
+    }
+    return line;
   }
 
-  function itemsBlock(flags) {
-    if (!flags.length) return "Items checked against CoSRH UKMEC 2025 tables: none flagged";
-    var lines = ["Items checked against CoSRH UKMEC 2025 tables:"];
-    flags.forEach(function (flag) { lines.push("- " + flag.text); });
+  function missingCore(state) {
+    var missing = [];
+    if (state.age === null) missing.push("age");
+    if (state.sys === null || state.dia === null || !state.bpSetting) missing.push("BP");
+    if (state.bmi === null) missing.push("BMI");
+    if (!state.smoking) missing.push("smoking");
+    if (!state.vaping) missing.push("vaping");
+    if (!state.migraine) missing.push("migraine");
+    return missing;
+  }
+
+  function incompleteLine(missing) {
+    return "INCOMPLETE - not recorded: " + missing.join(", ");
+  }
+
+  function checklistLines(state) {
+    var yesLines = [];
+    var allNo = true;
+    CHECKS.forEach(function (item) {
+      var value = state.answers[item.name];
+      if (value !== "yes" && value !== "no") {
+        allNo = false;
+        return;
+      }
+      if (value === "yes") {
+        allNo = false;
+        yesLines.push(item.label.replace(" (new in UKMEC 2025)", "") + ": Yes");
+      }
+    });
+    if (allNo) {
+      return ["Other UKMEC risk factors asked (incl. new 2025: CKD, sickle cell trait, MS): none"];
+    }
+    return yesLines;
+  }
+
+  function flagsBlock(flags, missing) {
+    var lines = [];
+    if (flags.length) {
+      lines.push("Flags:");
+      flags.forEach(function (flag) { lines.push("- " + flag.text); });
+      if (flags.length >= 2) lines.push(CUMULATIVE);
+    }
+    if (missing.length) lines.push(incompleteLine(missing));
+    else if (!flags.length) lines.push("Flags: none");
     return lines.join("\n");
   }
 
   function buildNote(state, flags) {
-    var lines = [
-      "UKMEC 2025 pill check (checklist " + VERSION + ")",
-      methodLine(state),
-      ageLine(state),
-      bpLine(state) + " | " + bmiLine(state),
-      "Known hypertension (controlled): " + yn(state.htn),
-      smokingLine(state) + " | " + vapingLine(state),
-      migraineLine(state),
-      "VTE personal/family: " + yn(state.answers.vte) + "/" + yn(state.answers.vteFam)
-    ];
-    NOTE_ROWS.forEach(function (row) {
-      lines.push(row[1] + ": " + yn(state.answers[row[0]]));
-    });
-    lines.push(
-      "New 2025 items - CKD: " + yn(state.answers.ckd) +
-      " | Sickle cell trait: " + yn(state.answers.sct) +
-      " | MS: " + yn(state.answers.ms)
-    );
-    lines.push("Mood/anxiety discussed: " + yn(state.mood));
-    lines.push("");
-    lines.push(itemsBlock(flags));
-    if (flags.length >= 2) lines.push(CUMULATIVE);
+    var lines = ["UKMEC 2025 pill check (checklist " + VERSION + ")"];
+    var identity = identityLine(state);
+    if (identity) lines.push(identity);
+    var measures = [bpText(state), bmiText(state)].filter(Boolean).join(" | ");
+    if (measures) lines.push(measures);
+    var habits = habitsLine(state);
+    if (habits) lines.push(habits);
+    if (state.vaping === "current" && (state.altChc === "yes" || state.altChc === "no")) {
+      lines.push("Alternatives to CHC discussed: " + (state.altChc === "yes" ? "Yes" : "No"));
+    }
+    var migraine = migraineText(state);
+    if (migraine) lines.push(migraine);
+    if (state.htn === "yes" || state.htn === "no") {
+      lines.push("Known hypertension (controlled): " + (state.htn === "yes" ? "Yes" : "No"));
+    }
+    checklistLines(state).forEach(function (line) { lines.push(line); });
+    if (state.mood === "yes" || state.mood === "no") {
+      lines.push("Mood/anxiety discussed: " + (state.mood === "yes" ? "Yes" : "No"));
+    }
+    lines.push(flagsBlock(flags, missingCore(state)));
+    lines.push(state.plan ? "Plan: " + state.plan : "Plan:");
     return lines.join("\n");
   }
 
@@ -1162,6 +1217,7 @@
   function syncVisibility(state) {
     $("cigs-wrap").hidden = state.smoking !== "current";
     $("mig-change-wrap").hidden = state.migraine !== "noaura";
+    $("alt-chc-wrap").hidden = state.vaping !== "current";
     $("bmi-direct").hidden = state.bmiMode !== "direct";
     $("bmi-calc").hidden = state.bmiMode !== "calc";
     $("fs-bmi").hidden = !state.bmiMode;
@@ -1221,7 +1277,7 @@
       } else if (state.bp.partial) {
         showNeutral("callout-bp", "Enter systolic, diastolic, and setting to show a NICE stage label.");
       } else if (state.bp.stage === "below") {
-        showNeutral("callout-bp", "NICE stage label: below stage 1 threshold.");
+        showNeutral("callout-bp", "NICE stage label: normal (below stage 1 threshold).");
       }
     }
     if (state.age !== null && (state.age < 12 || state.age > 60)) {
@@ -1314,6 +1370,15 @@
       syncChoices();
       paintAndCallouts(state, flags);
       renderFlags(flags);
+      var missing = missingCore(state);
+      var warning = $("core-warning");
+      if (missing.length) {
+        warning.hidden = false;
+        warning.textContent = incompleteLine(missing);
+      } else {
+        warning.hidden = true;
+        warning.textContent = "";
+      }
       $("note").value = buildNote(state, flags);
       announce(flags, mode || "");
     } catch (err) {
@@ -1399,6 +1464,14 @@
   form.addEventListener("change", function () { render(); });
   $("copy-btn").addEventListener("click", copyNote);
   $("reset-btn").addEventListener("click", resetForm);
+  $("mark-no-btn").addEventListener("click", function () {
+    CHECKS.forEach(function (item) {
+      if (radio(item.name)) return;
+      var no = document.querySelector('input[name="' + item.name + '"][value="no"]');
+      if (no) no.checked = true;
+    });
+    render();
+  });
 
   var numbers = document.querySelectorAll('input[type="number"]');
   for (var i = 0; i < numbers.length; i++) {

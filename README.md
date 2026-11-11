@@ -8,9 +8,11 @@ Open `index.html` in Edge or Chrome. The page is one file, with CSS and JavaScri
 
 ## What it does
 
-- Records method, review type, age, blood pressure, BMI, smoking, vaping, migraine, a yes/no history list, and mood discussion.
+- Records method, review type, age, blood pressure, BMI, smoking, vaping, migraine, a yes/no history list, mood discussion, and a free-text plan.
 - Shows a live **Items to check** list. Every highlight says to check the CoSRH UKMEC 2025 table.
-- Writes blank items as **not asked**, so an untouched question is not pasted as “No”.
+- Age, blood pressure, BMI, smoking, vaping, and migraine are core items. If any are blank, the note ends the clinical section with `INCOMPLETE - not recorded: ...` and an amber warning sits next to Copy. `Flags: none` is used only when those six are answered and nothing is highlighted.
+- Other blank items are left out of the note. When every history condition is No, the note uses one line. Yes answers are listed on their own.
+- **Mark remaining risk factors as No (asked and none)** fills only the unanswered history conditions.
 - Copies the note with the clipboard. If the browser blocks that (common when the file is opened from a folder), the note is selected for Ctrl+C.
 - Clears the page with **Reset**.
 
@@ -40,9 +42,9 @@ In `index.html`, edit the footer:
 - `Last reviewed: 3 November 2026`
 - `Author: [name], GP trainee`
 
-Replace `[name]` with your name. Update the date when you review the checklist against the tables. The note itself contains the checklist version (`v1.0`) and does not contain the author name.
+Replace `[name]` with your name. Update the date when you review the checklist against the tables. The note itself contains the checklist version (`v1.1`) and does not contain the author name.
 
-Known hypertension is asked as Yes / No, so the note can show “not asked” when it has not been answered. An empty checkbox cannot do that.
+Known hypertension is asked as Yes / No. If it is left blank, that line is left out of the note.
 
 ## Use on an NHS PC
 
