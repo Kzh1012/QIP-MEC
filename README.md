@@ -40,9 +40,8 @@ Check the wording against the current CoSRH tables before using the page in clin
 In `index.html`, edit the footer:
 
 - `Last reviewed: 3 November 2026`
-- `Author: [name], GP trainee`
 
-Replace `[name]` with your name. Update the date when you review the checklist against the tables. The note itself contains the checklist version (`v1.1`) and does not contain the author name.
+Update the date when you review the checklist against the tables. The note itself contains the checklist version (`v1.1`).
 
 Known hypertension is asked as Yes / No. If it is left blank, that line is left out of the note.
 
