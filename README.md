@@ -27,7 +27,7 @@ The higher of the systolic and diastolic stages is shown. There is no UKMEC numb
 
 - It does not replace clinical judgement or the [CoSRH UKMEC 2025 tables](https://www.cosrh.org/Public/Standards-and-Guidance/uk-medical-eligibility-criteria-for-contraceptive-use-ukmec.aspx).
 - It does not calculate or display UKMEC categories, and it does not say whether CHC is suitable.
-- Highlight colours are reminders to check the table. They are not categories. Red is used for migraine with aura, personal history of VTE, and NICE blood pressure stage 2/3. Amber is used for other highlighted answers. BMI of 35 or above, and smoking or recent stopping at age 35 or over, use a stronger amber.
+- Highlight colours are reminders to check the table. They are not categories. Red is used for migraine with aura, personal history of VTE, NICE blood pressure stage 2/3, and current smoking at age 35 or over with 15 or more cigarettes a day. Amber is used for other highlighted answers, including current smoking at age 35 or over with fewer than 15 cigarettes a day, and stopping less than 1 year ago at age 35 or over. BMI of 35 or above uses a stronger amber. Current smoking under 35 is a note, not a highlight. Stopping less than 1 year ago is highlighted only from age 35. If that age is blank, the note asks for age and does not add a flag. Stopping 1 year or more ago is not highlighted.
 - It does not store or send anything. There is no account, no patient name, no NHS number, no date of birth, no `localStorage`, and no network request from the page. Refreshing or closing the page clears the answers. Copy the note first.
 - It is not a medical device.
 

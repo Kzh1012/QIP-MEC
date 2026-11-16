@@ -645,7 +645,7 @@
 
         <section class="card">
           <h2>5. Smoking</h2>
-          <p class="hint">Current smoking, and stopping less than 1 year ago, are highlighted. Stronger at age 35 or over.</p>
+          <p class="hint">Under 35, current smoking is a note. From age 35 it is highlighted, and 15 or more cigarettes a day is the strongest highlight. Stopping less than 1 year ago is highlighted only from age 35.</p>
           <fieldset class="paintable" id="fs-smoking">
             <legend class="visually-hidden">Smoking</legend>
             <div class="choices stack">
@@ -1064,24 +1064,34 @@
     };
   }
 
-  function smokingSentence(state) {
-    var ageBit = "";
-    var level = "amber";
-    if (state.age !== null && state.age >= 35) {
-      ageBit = " aged 35 or over";
-      level = "strong";
+  function smokingAssessment(state) {
+    if (state.smoking === "exlt1") {
+      if (state.age === null) {
+        return { flag: null, note: "Enter age - recent ex-smoker is relevant to UKMEC 2025 if aged 35+." };
+      }
+      if (state.age >= 35) {
+        return {
+          flag: { level: "amber", text: "Ex-smoker stopped less than 1 year ago, aged 35 or over. " + CHECK_PHRASE },
+          note: ""
+        };
+      }
+      return { flag: null, note: "" };
     }
     if (state.smoking === "current") {
-      var cig = state.cigs === null ? "" : " (" + plainNum(state.cigs) + " cigarettes/day)";
-      return {
-        level: level,
-        text: "Current smoker" + ageBit + cig + ". " + CHECK_PHRASE
-      };
+      if (state.age === null) {
+        return { flag: null, note: "Enter age - current smoking is flagged from age 35, and in red at 15 or more cigarettes a day." };
+      }
+      if (state.age >= 35) {
+        var cig = state.cigs === null ? "" : " (" + plainNum(state.cigs) + " cigarettes/day)";
+        var level = state.cigs !== null && state.cigs >= 15 ? "red" : "amber";
+        return {
+          flag: { level: level, text: "Current smoker aged 35 or over" + cig + ". " + CHECK_PHRASE },
+          note: ""
+        };
+      }
+      return { flag: null, note: "Note: Current smoker under 35. " + CHECK_PHRASE };
     }
-    return {
-      level: level,
-      text: "Ex-smoker stopped less than 1 year ago" + ageBit + ". " + CHECK_PHRASE
-    };
+    return { flag: null, note: "" };
   }
 
   function buildFlags(state) {
@@ -1129,9 +1139,9 @@
         "callout-bmi"
       ));
     }
-    if (state.smoking === "current" || state.smoking === "exlt1") {
-      var smoking = smokingSentence(state);
-      flags.push(makeFlag("smoking", smoking.level, smoking.text, "fs-smoking", "callout-smoking"));
+    var smoking = smokingAssessment(state);
+    if (smoking.flag) {
+      flags.push(makeFlag("smoking", smoking.flag.level, smoking.flag.text, "fs-smoking", "callout-smoking"));
     }
     if (state.vaping === "current") {
       flags.push(makeFlag(
@@ -1289,6 +1299,8 @@
     if (measures) lines.push(measures);
     var habits = habitsLine(state);
     if (habits) lines.push(habits);
+    var smokingNote = smokingAssessment(state).note;
+    if (smokingNote) lines.push(smokingNote);
     if (state.vaping === "current" && (state.altChc === "yes" || state.altChc === "no")) {
       lines.push("Alternatives to CHC discussed: " + (state.altChc === "yes" ? "Yes" : "No"));
     }
@@ -1383,6 +1395,8 @@
     if (state.age !== null && (state.age < 12 || state.age > 60)) {
       showNeutral("callout-age", "Check this age. It is still written in the note.");
     }
+    var smokingNote = smokingAssessment(state).note;
+    if (smokingNote) showNeutral("callout-smoking", smokingNote);
     if (state.bmiError) {
       showNeutral("callout-bmi", state.bmiError);
     } else if (state.bmi !== null && state.bmi < 30 && state.bmiMode === "calc") {
