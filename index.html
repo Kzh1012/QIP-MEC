@@ -155,7 +155,7 @@
     float: left;
     width: calc(100% - 19rem);
     margin: 0;
-    padding: 12px 16px 12px 0;
+    padding: 8px 12px 8px 0;
     box-sizing: border-box;
   }
 
@@ -170,7 +170,13 @@
   .check-row > .info,
   .check-row > .follow-up {
     clear: both;
-    margin-top: 8px;
+    margin-top: 4px;
+  }
+
+  .check-row > .callout {
+    font-weight: 400;
+    margin-bottom: 6px;
+    line-height: 1.35;
   }
 
   @media (max-width: 720px) {
@@ -211,6 +217,7 @@
   .paintable.is-flag-amber { background: var(--amber-bg); border-left-color: var(--amber-edge); }
   .paintable.is-flag-strong { background: var(--strong-bg); border-left-color: var(--strong-edge); }
   .paintable.is-flag-red { background: var(--red-bg); border-left-color: var(--red-edge); }
+  .paintable.is-flag-blue { background: #e8f4fc; border-left-color: var(--blue); }
 
   label { display: block; font-weight: 700; margin-bottom: 6px; }
 
@@ -256,7 +263,9 @@
   .choices.stack .choice { flex-basis: 100%; }
   .choices.fit .choice { flex: 1 1 6.5rem; }
 
-  input[type="number"], textarea {
+  input[type="number"],
+  input[type="text"],
+  textarea {
     font: inherit;
     color: var(--text);
     background: #fff;
@@ -269,6 +278,7 @@
   }
 
   textarea { max-width: none; resize: vertical; }
+  input[type="text"] { max-width: 20rem; }
 
   .pair {
     display: grid;
@@ -327,6 +337,8 @@
     color: var(--blue);
   }
 
+  .new-group .badge { display: none; }
+
   details { margin-top: 10px; }
 
   details p,
@@ -383,6 +395,7 @@
   .flag-amber { background: var(--amber-bg); border-left-color: var(--amber-edge); }
   .flag-strong { background: var(--strong-bg); border-left-color: var(--strong-edge); }
   .flag-red { background: var(--red-bg); border-left-color: var(--red-edge); }
+  .flag-blue { background: #e8f4fc; border-left-color: var(--blue); }
 
   .cumulative {
     background: #e8f4fc;
@@ -807,6 +820,16 @@
               <label class="choice"><input type="radio" name="breast" value="yes"> <span>Yes</span></label>
               <label class="choice"><input type="radio" name="breast" value="no"> <span>No</span></label>
             </div>
+            <div id="breast-detail-wrap" class="follow-up" hidden>
+              <fieldset>
+                <legend>Which applies?</legend>
+                <div class="choices stack">
+                  <label class="choice"><input type="radio" name="breastDetail" value="current"> <span>Current treatment</span></label>
+                  <label class="choice"><input type="radio" name="breastDetail" value="completed"> <span>Treatment completed</span></label>
+                  <label class="choice"><input type="radio" name="breastDetail" value="brca"> <span>BRCA carrier</span></label>
+                </div>
+              </fieldset>
+            </div>
             <p id="callout-breast" class="callout" hidden></p>
           </fieldset>
 
@@ -816,6 +839,18 @@
               <label class="choice"><input type="radio" name="liver" value="yes"> <span>Yes</span></label>
               <label class="choice"><input type="radio" name="liver" value="no"> <span>No</span></label>
             </div>
+            <div id="liver-type-wrap" class="follow-up" hidden>
+              <fieldset>
+                <legend>Type</legend>
+                <div class="choices stack">
+                  <label class="choice"><input type="radio" name="liverType" value="mild"> <span>Mild cirrhosis</span></label>
+                  <label class="choice"><input type="radio" name="liverType" value="severe"> <span>Severe cirrhosis</span></label>
+                  <label class="choice"><input type="radio" name="liverType" value="adenoma"> <span>Hepatocellular adenoma or malignant</span></label>
+                  <label class="choice"><input type="radio" name="liverType" value="fnh"> <span>Focal nodular hyperplasia</span></label>
+                  <label class="choice"><input type="radio" name="liverType" value="other"> <span>Other</span></label>
+                </div>
+              </fieldset>
+            </div>
             <p id="callout-liver" class="callout" hidden></p>
           </fieldset>
 
@@ -824,6 +859,16 @@
             <div class="choices">
               <label class="choice"><input type="radio" name="sle" value="yes"> <span>Yes</span></label>
               <label class="choice"><input type="radio" name="sle" value="no"> <span>No</span></label>
+            </div>
+            <div id="sle-apl-wrap" class="follow-up" hidden>
+              <fieldset>
+                <legend>Antiphospholipid antibodies</legend>
+                <div class="choices">
+                  <label class="choice"><input type="radio" name="sleApl" value="positive"> <span>Positive</span></label>
+                  <label class="choice"><input type="radio" name="sleApl" value="negative"> <span>Negative</span></label>
+                  <label class="choice"><input type="radio" name="sleApl" value="unknown"> <span>Unknown</span></label>
+                </div>
+              </fieldset>
             </div>
             <p id="callout-sle" class="callout" hidden></p>
           </fieldset>
@@ -843,6 +888,22 @@
               <label class="choice"><input type="radio" name="pp" value="yes"> <span>Yes</span></label>
               <label class="choice"><input type="radio" name="pp" value="no"> <span>No</span></label>
             </div>
+            <div id="pp-follow-wrap" class="follow-up" hidden>
+              <fieldset>
+                <legend>Weeks since birth</legend>
+                <div class="choices">
+                  <label class="choice"><input type="radio" name="ppWeeks" value="lt3"> <span>&lt;3</span></label>
+                  <label class="choice"><input type="radio" name="ppWeeks" value="w36"> <span>3-6</span></label>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>Other VTE risk factors</legend>
+                <div class="choices">
+                  <label class="choice"><input type="radio" name="ppVte" value="yes"> <span>Yes</span></label>
+                  <label class="choice"><input type="radio" name="ppVte" value="no"> <span>No</span></label>
+                </div>
+              </fieldset>
+            </div>
             <p id="callout-pp" class="callout" hidden></p>
           </fieldset>
 
@@ -851,6 +912,10 @@
             <div class="choices">
               <label class="choice"><input type="radio" name="enzyme" value="yes"> <span>Yes</span></label>
               <label class="choice"><input type="radio" name="enzyme" value="no"> <span>No</span></label>
+            </div>
+            <div id="enzyme-drug-wrap" class="follow-up" hidden>
+              <label for="enzyme-drug">Drug name</label>
+              <input id="enzyme-drug" name="enzymeDrug" type="text" autocomplete="off" maxlength="80">
             </div>
             <p id="callout-enzyme" class="callout" hidden></p>
           </fieldset>
@@ -962,15 +1027,15 @@
   var CHECKS = [
     { name: "vte", label: "Personal history of VTE", short: "Personal VTE", level: "red" },
     { name: "vteFam", label: "First-degree relative with VTE", short: "Family VTE", level: "amber" },
-    { name: "thromb", label: "Known thrombogenic mutation or antiphospholipid antibodies", short: "Thrombogenic mutation/APS", level: "amber" },
+    { name: "thromb", label: "Known thrombogenic mutation or antiphospholipid antibodies", short: "Thrombogenic mutation/APS", level: "red" },
     { name: "immob", label: "Immobility", short: "Immobility", level: "amber" },
-    { name: "cvd", label: "Stroke/TIA or ischaemic heart disease", short: "Stroke/TIA/IHD", level: "amber" },
+    { name: "cvd", label: "Stroke/TIA or ischaemic heart disease", short: "Stroke/TIA/IHD", level: "red" },
     { name: "cvrisk", label: "Multiple cardiovascular risk factors", short: "Multiple CV risk factors", level: "amber" },
     { name: "dm", label: "Diabetes with complications", short: "Diabetes with complications", level: "amber" },
     { name: "breast", label: "Breast cancer (current or past)", short: "Breast cancer", level: "amber" },
     { name: "liver", label: "Liver disease or liver tumour", short: "Liver disease/tumour", level: "amber" },
     { name: "sle", label: "SLE", short: "SLE", level: "amber" },
-    { name: "valve", label: "Complicated valvular heart disease", short: "Complicated valvular heart disease", level: "amber" },
+    { name: "valve", label: "Complicated valvular heart disease", short: "Complicated valvular heart disease", level: "red" },
     { name: "pp", label: "Postpartum <6 weeks", short: "Postpartum <6 weeks", level: "amber" },
     { name: "enzyme", label: "Enzyme-inducing drugs", short: "Enzyme-inducing drugs", level: "amber" },
     { name: "ckd", label: "Chronic kidney disease (new in UKMEC 2025)", short: "CKD", level: "red" },
@@ -1030,10 +1095,22 @@
       id: id,
       level: level,
       text: text,
-      tag: tagFor(level),
+      tag: level ? tagFor(level) : "",
       target: target,
-      callout: callout
+      callout: callout,
+      ukmec: true
     };
+  }
+
+  function textValue(id) {
+    var el = $(id);
+    if (!el) return "";
+    return String(el.value).trim();
+  }
+
+  function setLevel(flag, level) {
+    flag.level = level;
+    flag.tag = level ? tagFor(level) : "";
   }
 
   function classifyBp(sys, dia, setting) {
@@ -1100,6 +1177,12 @@
       migChange: radio("migChange"),
       altChc: radio("altChc"),
       answers: answers,
+      breastDetail: radio("breastDetail"),
+      liverType: radio("liverType"),
+      sleApl: radio("sleApl"),
+      ppWeeks: radio("ppWeeks"),
+      ppVte: radio("ppVte"),
+      enzymeDrug: textValue("enzyme-drug"),
       msImmob: radio("msImmob"),
       mood: radio("mood"),
       tablesChecked: $("tables-checked").checked
@@ -1140,6 +1223,99 @@
       };
     }
     return { flag: null, note: "" };
+  }
+
+  function historyFlag(item, state) {
+    var name = item.label.replace(" (new in UKMEC 2025)", "");
+    var flag = makeFlag(item.name, item.level, name + ". " + CHECK_PHRASE, "fs-" + item.name, "callout-" + item.name);
+    flag.noteText = name;
+    flag.showOnRow = false;
+    if (item.name === "ckd") {
+      flag.text = "New in UKMEC 2025: increased VTE risk at all stages of CKD - see CoSRH table.";
+      flag.noteText = "Chronic kidney disease";
+      flag.showOnRow = true;
+    } else if (item.name === "sct") {
+      flag.text = "New in UKMEC 2025: small increase in VTE risk - prioritise alternatives to CHC (no UKMEC category given).";
+      flag.noteText = "Sickle cell trait";
+      flag.showOnRow = true;
+    } else if (item.name === "ms") {
+      flag.text = "New in UKMEC 2025: VTE risk mainly linked to immobility - see CoSRH table.";
+      flag.showOnRow = true;
+      if (state.msImmob === "yes") {
+        setLevel(flag, "red");
+        flag.noteText = "Multiple sclerosis, with prolonged immobility";
+      } else if (state.msImmob === "no") {
+        setLevel(flag, "amber");
+        flag.noteText = "Multiple sclerosis, without prolonged immobility";
+      } else {
+        setLevel(flag, "");
+        flag.noteText = "Multiple sclerosis";
+      }
+    } else if (item.name === "breast") {
+      var breast = {
+        current: ["red", "current treatment"],
+        completed: ["amber", "treatment completed"],
+        brca: ["amber", "BRCA carrier"]
+      };
+      var detail = breast[state.breastDetail];
+      if (detail) {
+        setLevel(flag, detail[0]);
+        flag.noteText = "Breast cancer, " + detail[1];
+        flag.text = flag.noteText + ". " + CHECK_PHRASE;
+      } else {
+        setLevel(flag, "");
+        flag.noteText = "Breast cancer";
+      }
+    } else if (item.name === "liver") {
+      var liver = {
+        mild: ["amber", "mild cirrhosis"],
+        severe: ["red", "severe cirrhosis"],
+        adenoma: ["red", "hepatocellular adenoma or malignant"],
+        fnh: ["amber", "focal nodular hyperplasia"],
+        other: ["amber", "other"]
+      };
+      var type = liver[state.liverType];
+      if (type) {
+        setLevel(flag, type[0]);
+        flag.noteText = "Liver disease or liver tumour, " + type[1];
+        flag.text = flag.noteText + ". " + CHECK_PHRASE;
+      } else {
+        setLevel(flag, "");
+      }
+    } else if (item.name === "sle") {
+      var apl = { positive: "red", negative: "amber", unknown: "amber" };
+      if (apl[state.sleApl]) {
+        setLevel(flag, apl[state.sleApl]);
+        flag.noteText = "SLE, antiphospholipid antibodies " + state.sleApl;
+        flag.text = flag.noteText + ". " + CHECK_PHRASE;
+      } else {
+        setLevel(flag, "");
+      }
+    } else if (item.name === "pp") {
+      var parts = ["Postpartum <6 weeks"];
+      if (state.ppWeeks === "lt3") {
+        setLevel(flag, "red");
+        parts.push("<3 weeks");
+      } else if (state.ppWeeks === "w36") {
+        setLevel(flag, "amber");
+        parts.push("3-6 weeks");
+      } else {
+        setLevel(flag, "");
+      }
+      if (state.ppVte === "yes" || state.ppVte === "no") {
+        parts.push("other VTE risk factors: " + (state.ppVte === "yes" ? "Yes" : "No"));
+      }
+      flag.noteText = parts.join(", ");
+      if (flag.level) flag.text = flag.noteText + ". " + CHECK_PHRASE;
+    } else if (item.name === "enzyme") {
+      setLevel(flag, "blue");
+      flag.ukmec = false;
+      flag.tag = "";
+      flag.text = "Reduces CHC effectiveness - see CoSRH drug interactions guidance / BNF";
+      flag.noteText = state.enzymeDrug ? "Enzyme-inducing drugs, " + state.enzymeDrug : "Enzyme-inducing drugs";
+      flag.showOnRow = true;
+    }
+    return flag;
   }
 
   function buildFlags(state) {
@@ -1215,31 +1391,7 @@
     }
     CHECKS.forEach(function (item) {
       if (state.answers[item.name] !== "yes") return;
-      var screen = item.label.replace(" (new in UKMEC 2025)", "") + ". " + CHECK_PHRASE;
-      var flag = makeFlag(item.name, item.level, screen, "fs-" + item.name, "callout-" + item.name);
-      if (item.name === "ckd") {
-        flag.text = "New in UKMEC 2025: increased VTE risk at all stages of CKD - see CoSRH table.";
-        flag.noteText = "Chronic kidney disease";
-      }
-      if (item.name === "sct") {
-        flag.text = "New in UKMEC 2025: small increase in VTE risk - prioritise alternatives to CHC (no UKMEC category given).";
-        flag.noteText = "Sickle cell trait";
-      }
-      if (item.name === "ms") {
-        flag.text = "New in UKMEC 2025: VTE risk mainly linked to immobility - see CoSRH table.";
-        if (state.msImmob === "yes") {
-          flag.level = "red";
-          flag.noteText = "Multiple sclerosis, with prolonged immobility";
-        } else if (state.msImmob === "no") {
-          flag.level = "amber";
-          flag.noteText = "Multiple sclerosis, without prolonged immobility";
-        } else {
-          flag.level = "";
-          flag.noteText = "Multiple sclerosis";
-        }
-        flag.tag = flag.level ? tagFor(flag.level) : "";
-      }
-      flags.push(flag);
+      flags.push(historyFlag(item, state));
     });
     return flags;
   }
@@ -1315,6 +1467,14 @@
     if (state.answers.ms === "yes" && state.msImmob !== "yes" && state.msImmob !== "no") {
       missing.push("MS immobility");
     }
+    if (state.answers.breast === "yes" && !state.breastDetail) missing.push("breast cancer status");
+    if (state.answers.liver === "yes" && !state.liverType) missing.push("liver type");
+    if (state.answers.sle === "yes" && !state.sleApl) missing.push("SLE antiphospholipid antibodies");
+    if (state.answers.pp === "yes" && !state.ppWeeks) missing.push("weeks since birth");
+    if (state.answers.pp === "yes" && state.ppVte !== "yes" && state.ppVte !== "no") {
+      missing.push("other VTE risk factors");
+    }
+    if (state.answers.enzyme === "yes" && !state.enzymeDrug) missing.push("enzyme-inducing drug");
     return missing;
   }
 
@@ -1352,9 +1512,22 @@
     return text.replace(CHECK_PHRASE, "").replace(/\s+$/, "");
   }
 
+  function ukmecColourCount(flags) {
+    var count = 0;
+    flags.forEach(function (flag) {
+      if (flag.ukmec === false) return;
+      if (flag.level === "red" || flag.level === "amber" || flag.level === "strong") count += 1;
+    });
+    return count;
+  }
+
+  function needsTableCheck(flags) {
+    return flags.some(function (flag) { return flag.ukmec !== false; });
+  }
+
   function missingItems(state, flags) {
     var missing = missingCore(state);
-    if (flags.length && !state.tablesChecked) missing.push("UKMEC table check");
+    if (needsTableCheck(flags) && !state.tablesChecked) missing.push("UKMEC table check");
     return missing;
   }
 
@@ -1365,8 +1538,10 @@
       flags.forEach(function (flag) {
         lines.push("- " + (flag.noteText || noteFlagText(flag.text)));
       });
-      if (flags.length >= 2) lines.push(CUMULATIVE);
-      lines.push("Flags checked against UKMEC 2025 tables: " + (tablesChecked ? "Yes" : "No"));
+      if (ukmecColourCount(flags) >= 2) lines.push(CUMULATIVE);
+      if (needsTableCheck(flags)) {
+        lines.push("Flags checked against UKMEC 2025 tables: " + (tablesChecked ? "Yes" : "No"));
+      }
     } else if (!missing.length) {
       lines.push("Flags: none");
     }
@@ -1411,6 +1586,11 @@
     $("cigs-wrap").hidden = state.smoking !== "current";
     $("mig-change-wrap").hidden = state.migraine !== "noaura";
     $("ms-immob-wrap").hidden = state.answers.ms !== "yes";
+    $("breast-detail-wrap").hidden = state.answers.breast !== "yes";
+    $("liver-type-wrap").hidden = state.answers.liver !== "yes";
+    $("sle-apl-wrap").hidden = state.answers.sle !== "yes";
+    $("pp-follow-wrap").hidden = state.answers.pp !== "yes";
+    $("enzyme-drug-wrap").hidden = state.answers.enzyme !== "yes";
     $("alt-chc-wrap").hidden = state.vaping !== "current";
     $("bmi-direct").hidden = state.bmiMode !== "direct";
     $("bmi-calc").hidden = state.bmiMode !== "calc";
@@ -1420,7 +1600,7 @@
   function clearPaint() {
     var nodes = document.querySelectorAll(".paintable");
     for (var i = 0; i < nodes.length; i++) {
-      nodes[i].classList.remove("is-flag-red", "is-flag-amber", "is-flag-strong");
+      nodes[i].classList.remove("is-flag-red", "is-flag-amber", "is-flag-strong", "is-flag-blue");
     }
   }
 
@@ -1457,8 +1637,13 @@
     });
     flags.forEach(function (flag) {
       var el = $(flag.callout);
-      if (!el) return;
+      if (!el || flag.showOnRow === false) return;
       el.hidden = false;
+      if (flag.showOnRow) {
+        el.className = "callout";
+        el.textContent = flag.text;
+        return;
+      }
       el.className = "callout";
       if (flag.tag) {
         var tag = document.createElement("span");
@@ -1510,7 +1695,7 @@
     });
     $("flag-empty").hidden = flags.length > 0;
     var cumulative = $("cumulative");
-    if (flags.length >= 2) {
+    if (ukmecColourCount(flags) >= 2) {
       cumulative.hidden = false;
       cumulative.textContent = CUMULATIVE;
     } else {
@@ -1522,7 +1707,7 @@
     var hasAmber = flags.some(function (flag) { return flag.level === "amber" || flag.level === "strong"; });
     jump.className = "flag-jump" + (hasRed ? " is-red" : hasAmber ? " is-amber" : "");
     if (!flags.length) jump.textContent = "Items to check: none flagged";
-    else if (flags.length >= 2) jump.textContent = "Items to check: " + flags.length + " — multiple risk factors";
+    else if (ukmecColourCount(flags) >= 2) jump.textContent = "Items to check: " + flags.length + " — multiple risk factors";
     else jump.textContent = "Items to check: " + flags.length;
   }
 
@@ -1553,8 +1738,10 @@
     if (!flags.length) msg = "No items flagged.";
     else if (added.length) msg = added.map(function (flag) { return flag.tag + " " + flag.text; }).join(" ");
     else if (removed.length) msg = "Highlight cleared. Items to check: " + flags.length + ".";
-    if (flags.length >= 2 && prev.length < 2) msg += (msg ? " " : "") + CUMULATIVE;
-    if (flags.length < 2 && prev.length >= 2) msg += (msg ? " " : "") + "Cumulative risk notice cleared.";
+    var nowCount = ukmecColourCount(flags);
+    var prevCount = prev.filter(function (part) { return /:(red|amber|strong)$/.test(part); }).length;
+    if (nowCount >= 2 && prevCount < 2) msg += (msg ? " " : "") + CUMULATIVE;
+    if (nowCount < 2 && prevCount >= 2) msg += (msg ? " " : "") + "Cumulative risk notice cleared.";
     lastSig = sig;
     if (msg) setAnnounce(msg);
   }
@@ -1573,7 +1760,7 @@
       syncChoices();
       paintAndCallouts(state, flags);
       renderFlags(flags);
-      $("tables-checked-wrap").hidden = flags.length === 0;
+      $("tables-checked-wrap").hidden = !needsTableCheck(flags);
       var missing = missingItems(state, flags);
       var unasked = $("unasked-count");
       var unanswered = splitChecks(state).unanswered;
