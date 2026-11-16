@@ -153,20 +153,20 @@
 
   .check-row > legend {
     float: left;
-    width: calc(100% - 19rem);
+    width: calc(100% - 17rem);
     margin: 0;
-    padding: 8px 12px 8px 0;
+    padding: 10px 12px 10px 0;
     box-sizing: border-box;
+    line-height: 1.3;
   }
 
   .check-row > .choices {
     float: right;
-    width: 18rem;
-    max-width: 18rem;
+    width: 16rem;
+    max-width: 16rem;
     margin: 4px 0;
   }
 
-  .check-row > .callout,
   .check-row > .info,
   .check-row > .follow-up {
     clear: both;
@@ -174,20 +174,38 @@
   }
 
   .check-row > .callout {
+    float: left;
+    clear: left;
+    width: calc(100% - 17rem);
+    box-sizing: border-box;
+    margin: 0 0 6px;
+    padding: 0 12px 0 0;
     font-weight: 400;
-    margin-bottom: 6px;
     line-height: 1.35;
   }
 
   @media (max-width: 720px) {
+    .check-row {
+      display: flex;
+      flex-direction: column;
+    }
     .check-row > legend,
     .check-row > .choices {
       float: none;
       width: auto;
       max-width: none;
     }
-    .check-row > legend { display: block; width: 100%; padding: 4px 0 8px; }
-    .check-row > .choices { margin: 0; }
+    .check-row > legend { display: block; width: 100%; padding: 4px 0 8px; order: 1; }
+    .check-row > .callout { order: 2; }
+    .check-row > .choices { order: 3; margin: 0; }
+    .check-row > .info,
+    .check-row > .follow-up { order: 4; }
+    .check-row > .callout {
+      float: none;
+      clear: none;
+      width: auto;
+      padding: 0 0 8px;
+    }
   }
 
   #history { gap: 6px; }
@@ -320,6 +338,7 @@
     line-height: 1.4;
     padding: 2px 8px;
     vertical-align: middle;
+    white-space: nowrap;
   }
 
   .new-group {
@@ -337,7 +356,21 @@
     color: var(--blue);
   }
 
-  .new-group .badge { display: none; }
+  .new-group .check-row > legend {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .new-group .legend-label { min-width: 0; }
+
+  .legend-note {
+    font-weight: 400;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .new-group .badge { margin: 1px 0 0; flex: 0 0 auto; }
 
   details { margin-top: 10px; }
 
@@ -477,10 +510,10 @@
   }
 
   #mark-no-btn {
-    align-self: flex-start;
+    align-self: flex-end;
     width: auto;
-    max-width: 100%;
-    margin: 4px 0 0;
+    margin: 4px 2px 0 0;
+    white-space: nowrap;
     background: #fff;
     color: var(--blue);
     border: 2px solid var(--blue);
@@ -913,18 +946,18 @@
               <label class="choice"><input type="radio" name="enzyme" value="yes"> <span>Yes</span></label>
               <label class="choice"><input type="radio" name="enzyme" value="no"> <span>No</span></label>
             </div>
+            <p id="callout-enzyme" class="callout" hidden></p>
             <div id="enzyme-drug-wrap" class="follow-up" hidden>
               <label for="enzyme-drug">Drug name</label>
               <input id="enzyme-drug" name="enzymeDrug" type="text" autocomplete="off" maxlength="80">
             </div>
-            <p id="callout-enzyme" class="callout" hidden></p>
           </fieldset>
 
           <div class="new-group">
             <h3>New in UKMEC 2025</h3>
 
             <fieldset class="paintable check-row" id="fs-ckd">
-              <legend>Chronic kidney disease <span class="badge">New in 2025</span></legend>
+              <legend><span class="legend-label">Chronic kidney disease</span><span class="badge">New in 2025</span></legend>
               <div class="choices">
                 <label class="choice"><input type="radio" name="ckd" value="yes"> <span>Yes</span></label>
                 <label class="choice"><input type="radio" name="ckd" value="no"> <span>No</span></label>
@@ -933,7 +966,7 @@
             </fieldset>
 
             <fieldset class="paintable check-row" id="fs-sct">
-              <legend>Sickle cell trait (not sickle cell disease) <span class="badge">New in 2025</span></legend>
+              <legend><span class="legend-label">Sickle cell trait <span class="legend-note">(not sickle cell disease)</span></span><span class="badge">New in 2025</span></legend>
               <div class="choices">
                 <label class="choice"><input type="radio" name="sct" value="yes"> <span>Yes</span></label>
                 <label class="choice"><input type="radio" name="sct" value="no"> <span>No</span></label>
@@ -942,11 +975,12 @@
             </fieldset>
 
             <fieldset class="paintable check-row" id="fs-ms">
-              <legend>Multiple sclerosis <span class="badge">New in 2025</span></legend>
+              <legend><span class="legend-label">Multiple sclerosis</span><span class="badge">New in 2025</span></legend>
               <div class="choices">
                 <label class="choice"><input type="radio" name="ms" value="yes"> <span>Yes</span></label>
                 <label class="choice"><input type="radio" name="ms" value="no"> <span>No</span></label>
               </div>
+              <p id="callout-ms" class="callout" hidden></p>
               <div id="ms-immob-wrap" class="follow-up" hidden>
                 <fieldset>
                   <legend>Prolonged immobility?</legend>
@@ -956,7 +990,6 @@
                   </div>
                 </fieldset>
               </div>
-              <p id="callout-ms" class="callout" hidden></p>
             </fieldset>
           </div>
           <button type="button" id="mark-no-btn">Mark blanks as No</button>
