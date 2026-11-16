@@ -111,7 +111,8 @@
 
   .lead {
     max-width: 68ch;
-    margin: 0 0 20px;
+    margin: 0 0 16px;
+    color: var(--muted);
   }
 
   .layout {
@@ -144,6 +145,42 @@
   }
 
   .hint { margin: 0; color: var(--muted); }
+
+  .check-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 8px;
+    padding: 4px 2px 4px 10px;
+  }
+
+  .check-row > legend {
+    float: left;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 8px 0;
+  }
+
+  @media (max-width: 640px) {
+    .check-row > legend { float: none; display: block; width: 100%; }
+    .check-row > .choices { margin-left: 0; max-width: none; }
+  }
+
+  .check-row > .choices {
+    flex: 1 1 16rem;
+    max-width: 20rem;
+    margin-left: auto;
+  }
+
+  .check-row > .callout,
+  .check-row > .info {
+    flex: 1 1 100%;
+    margin-top: 0;
+  }
+
+  #history { gap: 6px; }
 
   fieldset {
     border: 0;
@@ -463,6 +500,10 @@
     .pair { max-width: none; }
   }
 
+  @media (min-width: 900px) {
+    .flag-jump { display: none; }
+  }
+
   @media (min-width: 720px) {
     body { padding-bottom: 9rem; }
     .masthead h1 { font-size: 1.75rem; }
@@ -496,7 +537,7 @@
 <a class="flag-jump" id="flag-jump" href="#flags">Items to check: none flagged</a>
 
 <main id="content">
-  <p class="lead">Record the review, then copy the note into EMIS. Age, blood pressure, BMI, smoking, vaping, and migraine are needed for a complete note. Other blank items are left out. Highlights mean the answer should be checked in the CoSRH UKMEC 2025 tables. This page does not give a UKMEC category or a yes/no decision. Nothing is saved in the browser.</p>
+  <p class="lead">Copy the note into EMIS when it is complete. Age, BP, BMI, smoking, vaping, and migraine are required. This page does not give a UKMEC category, and nothing is saved.</p>
 
   <form id="check-form" autocomplete="off" autocapitalize="off">
     <div class="layout">
@@ -504,7 +545,7 @@
         <section class="card">
           <h2 id="method-heading" tabindex="-1">1. Method</h2>
           <fieldset>
-            <legend>Method</legend>
+            <legend class="visually-hidden">Method</legend>
             <div class="choices fit">
               <label class="choice"><input type="radio" name="method" value="coc"> <span>COC</span></label>
               <label class="choice"><input type="radio" name="method" value="patch"> <span>Patch</span></label>
@@ -560,7 +601,7 @@
               </ul>
             </details>
           </fieldset>
-          <fieldset class="paintable" id="fs-htn">
+          <fieldset class="paintable check-row" id="fs-htn">
             <legend>Known hypertension (controlled)</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="htn" value="yes"> <span>Yes</span></label>
@@ -604,9 +645,9 @@
 
         <section class="card">
           <h2>5. Smoking</h2>
-          <p class="hint">Current smoking, and stopping less than 1 year ago, are highlighted. The highlight is stronger when age is 35 or over.</p>
+          <p class="hint">Current smoking, and stopping less than 1 year ago, are highlighted. Stronger at age 35 or over.</p>
           <fieldset class="paintable" id="fs-smoking">
-            <legend>Smoking</legend>
+            <legend class="visually-hidden">Smoking</legend>
             <div class="choices stack">
               <label class="choice"><input type="radio" name="smoking" value="never"> <span>Never</span></label>
               <label class="choice"><input type="radio" name="smoking" value="exlt1"> <span>Ex-smoker stopped &lt;1 year</span></label>
@@ -624,7 +665,7 @@
         <section class="card">
           <h2>6. Vaping <span class="badge">New in 2025</span></h2>
           <fieldset class="paintable" id="fs-vaping">
-            <legend>Vaping</legend>
+            <legend class="visually-hidden">Vaping</legend>
             <div class="choices fit">
               <label class="choice"><input type="radio" name="vaping" value="never"> <span>Never</span></label>
               <label class="choice"><input type="radio" name="vaping" value="ex"> <span>Ex</span></label>
@@ -645,9 +686,9 @@
 
         <section class="card">
           <h2>7. Migraine</h2>
-          <p class="hint">Any migraine is highlighted. Migraine with aura is highlighted most strongly.</p>
+          <p class="hint">Any migraine is highlighted. Aura is the strongest highlight.</p>
           <fieldset class="paintable" id="fs-migraine">
-            <legend>Migraine</legend>
+            <legend class="visually-hidden">Migraine</legend>
             <div class="choices stack">
               <label class="choice"><input type="radio" name="migraine" value="none"> <span>None</span></label>
               <label class="choice"><input type="radio" name="migraine" value="noaura"> <span>Without aura</span></label>
@@ -666,11 +707,11 @@
           </fieldset>
         </section>
 
-        <section class="card">
+        <section class="card" id="history">
           <h2>8. History</h2>
-          <p class="hint">Yes is highlighted for a table check. New UKMEC 2025 items are marked.</p>
+          <p class="hint">Yes is highlighted for a table check.</p>
 
-          <fieldset class="paintable" id="fs-vte">
+          <fieldset class="paintable check-row" id="fs-vte">
             <legend>Personal history of VTE</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="vte" value="yes"> <span>Yes</span></label>
@@ -679,7 +720,7 @@
             <p id="callout-vte" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-vteFam">
+          <fieldset class="paintable check-row" id="fs-vteFam">
             <legend>First-degree relative with VTE</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="vteFam" value="yes"> <span>Yes</span></label>
@@ -688,7 +729,7 @@
             <p id="callout-vteFam" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-thromb">
+          <fieldset class="paintable check-row" id="fs-thromb">
             <legend>Known thrombogenic mutation or antiphospholipid antibodies</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="thromb" value="yes"> <span>Yes</span></label>
@@ -697,7 +738,7 @@
             <p id="callout-thromb" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-immob">
+          <fieldset class="paintable check-row" id="fs-immob">
             <legend>Immobility</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="immob" value="yes"> <span>Yes</span></label>
@@ -706,7 +747,7 @@
             <p id="callout-immob" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-cvd">
+          <fieldset class="paintable check-row" id="fs-cvd">
             <legend>Stroke/TIA or ischaemic heart disease</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="cvd" value="yes"> <span>Yes</span></label>
@@ -715,7 +756,7 @@
             <p id="callout-cvd" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-cvrisk">
+          <fieldset class="paintable check-row" id="fs-cvrisk">
             <legend>Multiple cardiovascular risk factors</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="cvrisk" value="yes"> <span>Yes</span></label>
@@ -724,7 +765,7 @@
             <p id="callout-cvrisk" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-dm">
+          <fieldset class="paintable check-row" id="fs-dm">
             <legend>Diabetes with complications</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="dm" value="yes"> <span>Yes</span></label>
@@ -733,7 +774,7 @@
             <p id="callout-dm" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-breast">
+          <fieldset class="paintable check-row" id="fs-breast">
             <legend>Breast cancer (current or past)</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="breast" value="yes"> <span>Yes</span></label>
@@ -742,7 +783,7 @@
             <p id="callout-breast" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-liver">
+          <fieldset class="paintable check-row" id="fs-liver">
             <legend>Liver disease or liver tumour</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="liver" value="yes"> <span>Yes</span></label>
@@ -751,7 +792,7 @@
             <p id="callout-liver" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-sle">
+          <fieldset class="paintable check-row" id="fs-sle">
             <legend>SLE</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="sle" value="yes"> <span>Yes</span></label>
@@ -760,7 +801,7 @@
             <p id="callout-sle" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-valve">
+          <fieldset class="paintable check-row" id="fs-valve">
             <legend>Complicated valvular heart disease</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="valve" value="yes"> <span>Yes</span></label>
@@ -769,7 +810,7 @@
             <p id="callout-valve" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-pp">
+          <fieldset class="paintable check-row" id="fs-pp">
             <legend>Postpartum &lt;6 weeks</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="pp" value="yes"> <span>Yes</span></label>
@@ -778,7 +819,7 @@
             <p id="callout-pp" class="callout" hidden></p>
           </fieldset>
 
-          <fieldset class="paintable" id="fs-enzyme">
+          <fieldset class="paintable check-row" id="fs-enzyme">
             <legend>Enzyme-inducing drugs</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="enzyme" value="yes"> <span>Yes</span></label>
@@ -790,7 +831,7 @@
           <div class="new-group">
             <h3>New in UKMEC 2025</h3>
 
-            <fieldset class="paintable" id="fs-ckd">
+            <fieldset class="paintable check-row" id="fs-ckd">
               <legend>Chronic kidney disease <span class="badge">New in 2025</span></legend>
               <div class="choices">
                 <label class="choice"><input type="radio" name="ckd" value="yes"> <span>Yes</span></label>
@@ -799,7 +840,7 @@
               <p id="callout-ckd" class="callout" hidden></p>
             </fieldset>
 
-            <fieldset class="paintable" id="fs-sct">
+            <fieldset class="paintable check-row" id="fs-sct">
               <legend>Sickle cell trait <span class="badge">New in 2025</span></legend>
               <div class="choices">
                 <label class="choice"><input type="radio" name="sct" value="yes"> <span>Yes</span></label>
@@ -808,7 +849,7 @@
               <p id="callout-sct" class="callout" hidden></p>
             </fieldset>
 
-            <fieldset class="paintable" id="fs-ms">
+            <fieldset class="paintable check-row" id="fs-ms">
               <legend>Multiple sclerosis <span class="badge">New in 2025</span></legend>
               <div class="choices">
                 <label class="choice"><input type="radio" name="ms" value="yes"> <span>Yes</span></label>
@@ -818,12 +859,12 @@
             </fieldset>
           </div>
           <button type="button" id="mark-no-btn">Mark remaining risk factors as No (asked and none)</button>
-          <p class="hint">This sets only unanswered conditions in this section to No. Answers already given stay as they are.</p>
+          <p class="hint">Fills only the blank conditions in this section. Answers already given stay as they are.</p>
         </section>
 
         <section class="card">
           <h2>9. Mood and anxiety</h2>
-          <fieldset id="fs-mood">
+          <fieldset class="check-row" id="fs-mood">
             <legend>Mood/anxiety discussed</legend>
             <div class="choices">
               <label class="choice"><input type="radio" name="mood" value="yes"> <span>Yes</span></label>
@@ -836,17 +877,15 @@
 
       <aside class="card summary" id="flags" aria-labelledby="flags-heading">
         <h2 id="flags-heading">Items to check</h2>
-        <p class="hint">Each highlight should be checked in the CoSRH UKMEC 2025 tables. Highlight strength is not a UKMEC category.</p>
+        <p class="hint">Check each highlight in the CoSRH tables. Strength is not a UKMEC category.</p>
         <p id="cumulative" class="cumulative" hidden></p>
         <ul id="flag-list" class="flag-list"></ul>
         <p id="flag-empty">No items flagged.</p>
-        <p class="hint">Age, BP, BMI, smoking, vaping, and migraine left blank are listed as not recorded. Other blank items are left out of the note.</p>
       </aside>
     </div>
 
     <section class="card" aria-labelledby="note-heading">
       <h2 id="note-heading">Consultation note</h2>
-      <p class="hint">This preview matches the answers above.</p>
       <label for="note">Plain-text note</label>
       <textarea id="note" readonly spellcheck="false" aria-readonly="true"></textarea>
     </section>
