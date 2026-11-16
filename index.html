@@ -167,7 +167,8 @@
   }
 
   .check-row > .callout,
-  .check-row > .info {
+  .check-row > .info,
+  .check-row > .follow-up {
     clear: both;
     margin-top: 8px;
   }
@@ -350,6 +351,26 @@
   }
 
   .flag-list { list-style: none; margin: 0; padding: 0; }
+
+  .confirm-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    margin: 12px 0 0;
+    padding: 8px 12px;
+    border: 2px solid var(--muted);
+    background: #fff;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .confirm-check input {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 auto;
+    accent-color: var(--blue);
+  }
 
   .flag {
     margin: 0 0 8px;
@@ -847,7 +868,7 @@
             </fieldset>
 
             <fieldset class="paintable check-row" id="fs-sct">
-              <legend>Sickle cell trait <span class="badge">New in 2025</span></legend>
+              <legend>Sickle cell trait (not sickle cell disease) <span class="badge">New in 2025</span></legend>
               <div class="choices">
                 <label class="choice"><input type="radio" name="sct" value="yes"> <span>Yes</span></label>
                 <label class="choice"><input type="radio" name="sct" value="no"> <span>No</span></label>
@@ -860,6 +881,15 @@
               <div class="choices">
                 <label class="choice"><input type="radio" name="ms" value="yes"> <span>Yes</span></label>
                 <label class="choice"><input type="radio" name="ms" value="no"> <span>No</span></label>
+              </div>
+              <div id="ms-immob-wrap" class="follow-up" hidden>
+                <fieldset>
+                  <legend>Prolonged immobility?</legend>
+                  <div class="choices">
+                    <label class="choice"><input type="radio" name="msImmob" value="yes"> <span>Yes</span></label>
+                    <label class="choice"><input type="radio" name="msImmob" value="no"> <span>No</span></label>
+                  </div>
+                </fieldset>
               </div>
               <p id="callout-ms" class="callout" hidden></p>
             </fieldset>
@@ -887,6 +917,10 @@
         <p id="cumulative" class="cumulative" hidden></p>
         <ul id="flag-list" class="flag-list"></ul>
         <p id="flag-empty">No items flagged.</p>
+        <label class="confirm-check" id="tables-checked-wrap" hidden>
+          <input type="checkbox" id="tables-checked" name="tablesChecked">
+          <span>Flagged items checked against UKMEC 2025 tables</span>
+        </label>
       </aside>
     </div>
 
@@ -939,7 +973,7 @@
     { name: "valve", label: "Complicated valvular heart disease", short: "Complicated valvular heart disease", level: "amber" },
     { name: "pp", label: "Postpartum <6 weeks", short: "Postpartum <6 weeks", level: "amber" },
     { name: "enzyme", label: "Enzyme-inducing drugs", short: "Enzyme-inducing drugs", level: "amber" },
-    { name: "ckd", label: "Chronic kidney disease (new in UKMEC 2025)", short: "CKD", level: "amber" },
+    { name: "ckd", label: "Chronic kidney disease (new in UKMEC 2025)", short: "CKD", level: "red" },
     { name: "sct", label: "Sickle cell trait (new in UKMEC 2025)", short: "Sickle cell trait", level: "amber" },
     { name: "ms", label: "Multiple sclerosis (new in UKMEC 2025)", short: "MS", level: "amber" }
   ];
@@ -1066,7 +1100,9 @@
       migChange: radio("migChange"),
       altChc: radio("altChc"),
       answers: answers,
-      mood: radio("mood")
+      msImmob: radio("msImmob"),
+      mood: radio("mood"),
+      tablesChecked: $("tables-checked").checked
     };
   }
 
@@ -1178,15 +1214,32 @@
       flags.push(makeFlag("migraine", "amber", extra + CHECK_PHRASE, "fs-migraine", "callout-migraine"));
     }
     CHECKS.forEach(function (item) {
-      if (state.answers[item.name] === "yes") {
-        flags.push(makeFlag(
-          item.name,
-          item.level,
-          item.label.replace(" (new in UKMEC 2025)", "") + ". " + CHECK_PHRASE,
-          "fs-" + item.name,
-          "callout-" + item.name
-        ));
+      if (state.answers[item.name] !== "yes") return;
+      var screen = item.label.replace(" (new in UKMEC 2025)", "") + ". " + CHECK_PHRASE;
+      var flag = makeFlag(item.name, item.level, screen, "fs-" + item.name, "callout-" + item.name);
+      if (item.name === "ckd") {
+        flag.text = "New in UKMEC 2025: increased VTE risk at all stages of CKD - see CoSRH table.";
+        flag.noteText = "Chronic kidney disease";
       }
+      if (item.name === "sct") {
+        flag.text = "New in UKMEC 2025: small increase in VTE risk - prioritise alternatives to CHC (no UKMEC category given).";
+        flag.noteText = "Sickle cell trait";
+      }
+      if (item.name === "ms") {
+        flag.text = "New in UKMEC 2025: VTE risk mainly linked to immobility - see CoSRH table.";
+        if (state.msImmob === "yes") {
+          flag.level = "red";
+          flag.noteText = "Multiple sclerosis, with prolonged immobility";
+        } else if (state.msImmob === "no") {
+          flag.level = "amber";
+          flag.noteText = "Multiple sclerosis, without prolonged immobility";
+        } else {
+          flag.level = "";
+          flag.noteText = "Multiple sclerosis";
+        }
+        flag.tag = flag.level ? tagFor(flag.level) : "";
+      }
+      flags.push(flag);
     });
     return flags;
   }
@@ -1259,6 +1312,9 @@
     if (state.migraine === "noaura" && state.migChange !== "yes" && state.migChange !== "no") {
       missing.push("new or worse on CHC");
     }
+    if (state.answers.ms === "yes" && state.msImmob !== "yes" && state.msImmob !== "no") {
+      missing.push("MS immobility");
+    }
     return missing;
   }
 
@@ -1292,12 +1348,25 @@
     return lines;
   }
 
-  function flagsBlock(flags, missing) {
+  function noteFlagText(text) {
+    return text.replace(CHECK_PHRASE, "").replace(/\s+$/, "");
+  }
+
+  function missingItems(state, flags) {
+    var missing = missingCore(state);
+    if (flags.length && !state.tablesChecked) missing.push("UKMEC table check");
+    return missing;
+  }
+
+  function flagsBlock(flags, missing, tablesChecked) {
     var lines = [];
     if (flags.length) {
       lines.push("Flags:");
-      flags.forEach(function (flag) { lines.push("- " + flag.text); });
+      flags.forEach(function (flag) {
+        lines.push("- " + (flag.noteText || noteFlagText(flag.text)));
+      });
       if (flags.length >= 2) lines.push(CUMULATIVE);
+      lines.push("Flags checked against UKMEC 2025 tables: " + (tablesChecked ? "Yes" : "No"));
     } else if (!missing.length) {
       lines.push("Flags: none");
     }
@@ -1306,7 +1375,7 @@
 
   function buildNote(state, flags) {
     var lines = ["UKMEC 2025 pill check (checklist " + VERSION + ")"];
-    var missing = missingCore(state);
+    var missing = missingItems(state, flags);
     if (missing.length) lines.push(incompleteLine(missing));
     lines.push(identityLine(state));
     var measures = [bpText(state), bmiText(state)].filter(Boolean).join(" | ");
@@ -1325,7 +1394,7 @@
     if (state.mood === "yes" || state.mood === "no") {
       lines.push("Mood/anxiety discussed: " + (state.mood === "yes" ? "Yes" : "No"));
     }
-    var flagText = flagsBlock(flags, missing);
+    var flagText = flagsBlock(flags, missing, state.tablesChecked);
     if (flagText) lines.push(flagText);
     return lines.join("\n");
   }
@@ -1341,6 +1410,7 @@
   function syncVisibility(state) {
     $("cigs-wrap").hidden = state.smoking !== "current";
     $("mig-change-wrap").hidden = state.migraine !== "noaura";
+    $("ms-immob-wrap").hidden = state.answers.ms !== "yes";
     $("alt-chc-wrap").hidden = state.vaping !== "current";
     $("bmi-direct").hidden = state.bmiMode !== "direct";
     $("bmi-calc").hidden = state.bmiMode !== "calc";
@@ -1376,6 +1446,7 @@
     clearCallouts();
     var paint = {};
     flags.forEach(function (flag) {
+      if (!flag.level) return;
       if (!paint[flag.target] || rank(flag.level) > rank(paint[flag.target])) {
         paint[flag.target] = flag.level;
       }
@@ -1389,11 +1460,14 @@
       if (!el) return;
       el.hidden = false;
       el.className = "callout";
-      var tag = document.createElement("span");
-      tag.className = "flag-tag";
-      tag.textContent = flag.tag;
-      el.appendChild(tag);
-      el.appendChild(document.createTextNode(" " + flag.text));
+      if (flag.tag) {
+        var tag = document.createElement("span");
+        tag.className = "flag-tag";
+        tag.textContent = flag.tag;
+        el.appendChild(tag);
+        el.appendChild(document.createTextNode(" "));
+      }
+      el.appendChild(document.createTextNode(flag.text));
     });
     if (!paint["fs-bp"]) {
       if (state.bp.warning) {
@@ -1423,12 +1497,15 @@
     list.textContent = "";
     flags.forEach(function (flag) {
       var li = document.createElement("li");
-      li.className = "flag flag-" + flag.level;
-      var tag = document.createElement("span");
-      tag.className = "flag-tag";
-      tag.textContent = flag.tag;
-      li.appendChild(tag);
-      li.appendChild(document.createTextNode(" " + flag.text));
+      li.className = "flag" + (flag.level ? " flag-" + flag.level : "");
+      if (flag.tag) {
+        var tag = document.createElement("span");
+        tag.className = "flag-tag";
+        tag.textContent = flag.tag;
+        li.appendChild(tag);
+        li.appendChild(document.createTextNode(" "));
+      }
+      li.appendChild(document.createTextNode(flag.text));
       list.appendChild(li);
     });
     $("flag-empty").hidden = flags.length > 0;
@@ -1442,7 +1519,7 @@
     }
     var jump = $("flag-jump");
     var hasRed = flags.some(function (flag) { return flag.level === "red"; });
-    var hasAmber = flags.some(function (flag) { return flag.level !== "red"; });
+    var hasAmber = flags.some(function (flag) { return flag.level === "amber" || flag.level === "strong"; });
     jump.className = "flag-jump" + (hasRed ? " is-red" : hasAmber ? " is-amber" : "");
     if (!flags.length) jump.textContent = "Items to check: none flagged";
     else if (flags.length >= 2) jump.textContent = "Items to check: " + flags.length + " — multiple risk factors";
@@ -1496,7 +1573,8 @@
       syncChoices();
       paintAndCallouts(state, flags);
       renderFlags(flags);
-      var missing = missingCore(state);
+      $("tables-checked-wrap").hidden = flags.length === 0;
+      var missing = missingItems(state, flags);
       var unasked = $("unasked-count");
       var unanswered = splitChecks(state).unanswered;
       if (unanswered) {
