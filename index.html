@@ -54,12 +54,18 @@
     background: var(--amber-bg);
     color: var(--text);
     border-bottom: 4px solid var(--amber-edge);
-    padding: 12px 16px;
-    font-size: 1.0625rem;
+    padding: 10px 16px;
+    font-size: 1rem;
   }
 
-  .banner p { margin: 0 0 8px; }
-  .banner p:last-child { margin: 0; }
+  .banner p { margin: 0; }
+
+  @media (min-width: 840px) {
+    .banner p {
+      white-space: nowrap;
+      font-size: clamp(0.75rem, 1.38vw, 1rem);
+    }
+  }
 
   .banner a {
     color: var(--blue-dark);
@@ -479,8 +485,7 @@
 <a class="skip" href="#content">Skip to checklist</a>
 
 <div class="banner" role="note">
-  <p><strong>Documentation aid only.</strong> Does not replace clinical judgement or the CoSRH UKMEC 2025 tables.</p>
-  <p><a href="https://www.cosrh.org/Public/Standards-and-Guidance/uk-medical-eligibility-criteria-for-contraceptive-use-ukmec.aspx" target="_blank" rel="noopener noreferrer">CoSRH UKMEC 2025 tables (opens in a new tab)</a></p>
+  <p><strong>Documentation aid only.</strong> Does not replace clinical judgement or the CoSRH UKMEC 2025 tables. <a href="https://www.cosrh.org/Public/Standards-and-Guidance/uk-medical-eligibility-criteria-for-contraceptive-use-ukmec.aspx" target="_blank" rel="noopener noreferrer">CoSRH UKMEC 2025 tables (opens in a new tab)</a></p>
 </div>
 
 <header class="masthead">
