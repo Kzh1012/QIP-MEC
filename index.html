@@ -1019,9 +1019,9 @@
             <option>Continue CHC</option>
             <option>Continue CHC - risks and alternatives discussed</option>
             <option>Switch to POP (desogestrel)</option>
-            <option>Refer/book for LARC (implant / LNG-IUD / Cu-IUD)</option>
             <option>Stop CHC - other plan</option>
             <option>Awaiting further info (e.g. repeat BP)</option>
+            <option>Other</option>
           </select>
           <label for="plan-text">Further detail</label>
           <textarea id="plan-text" name="planText" rows="3" maxlength="400"></textarea>
@@ -1243,9 +1243,9 @@
           "Continue CHC",
           "Continue CHC - risks and alternatives discussed",
           "Switch to POP (desogestrel)",
-          "Refer/book for LARC (implant / LNG-IUD / Cu-IUD)",
           "Stop CHC - other plan",
-          "Awaiting further info (e.g. repeat BP)"
+          "Awaiting further info (e.g. repeat BP)",
+          "Other"
         ];
         return allowed.indexOf(value) === -1 ? "" : value;
       })(),
