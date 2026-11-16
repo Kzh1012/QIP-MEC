@@ -170,6 +170,32 @@
   .check-row > .info,
   .check-row > .follow-up {
     clear: both;
+    margin-top: 8px;
+  }
+
+  .follow-up > fieldset {
+    display: flow-root;
+    margin-top: 0;
+    padding: 0;
+  }
+
+  .follow-up > fieldset > legend {
+    float: left;
+    width: calc(100% - 17rem);
+    margin: 0;
+    padding: 10px 12px 10px 0;
+    box-sizing: border-box;
+  }
+
+  .follow-up > fieldset > .choices:not(.stack) {
+    float: right;
+    width: 16rem;
+    max-width: 16rem;
+    margin: 0;
+  }
+
+  .follow-up > fieldset > .choices.stack {
+    clear: both;
     margin-top: 4px;
   }
 
@@ -206,6 +232,13 @@
       width: auto;
       padding: 0 0 8px;
     }
+    .follow-up > fieldset > legend,
+    .follow-up > fieldset > .choices:not(.stack) {
+      float: none;
+      width: auto;
+      max-width: none;
+    }
+    .follow-up > fieldset > legend { padding: 4px 0 8px; }
   }
 
   #history { gap: 6px; }
