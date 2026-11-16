@@ -147,37 +147,40 @@
   .hint { margin: 0; color: var(--muted); }
 
   .check-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    column-gap: 12px;
-    row-gap: 8px;
-    padding: 4px 2px 4px 10px;
+    display: flow-root;
+    padding: 2px 2px 2px 10px;
   }
 
   .check-row > legend {
     float: left;
-    width: auto;
-    max-width: 100%;
+    width: calc(100% - 19rem);
     margin: 0;
-    padding: 8px 0;
-  }
-
-  @media (max-width: 640px) {
-    .check-row > legend { float: none; display: block; width: 100%; }
-    .check-row > .choices { margin-left: 0; max-width: none; }
+    padding: 12px 16px 12px 0;
+    box-sizing: border-box;
   }
 
   .check-row > .choices {
-    flex: 1 1 16rem;
-    max-width: 20rem;
-    margin-left: auto;
+    float: right;
+    width: 18rem;
+    max-width: 18rem;
+    margin: 4px 0;
   }
 
   .check-row > .callout,
   .check-row > .info {
-    flex: 1 1 100%;
-    margin-top: 0;
+    clear: both;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 720px) {
+    .check-row > legend,
+    .check-row > .choices {
+      float: none;
+      width: auto;
+      max-width: none;
+    }
+    .check-row > legend { display: block; width: 100%; padding: 4px 0 8px; }
+    .check-row > .choices { margin: 0; }
   }
 
   #history { gap: 6px; }
@@ -440,14 +443,17 @@
   }
 
   #mark-no-btn {
-    display: block;
-    width: 100%;
+    align-self: flex-start;
+    width: auto;
+    max-width: 100%;
     margin: 4px 0 0;
     background: #fff;
     color: var(--blue);
     border: 2px solid var(--blue);
-    text-align: left;
+    text-align: center;
   }
+
+  #mark-no-btn + .hint { margin: 0; }
 
   #mark-no-btn:hover { background: #e8f4fc; }
 
@@ -531,7 +537,7 @@
 
 <header class="masthead">
   <h1>UKMEC 2025 pill check</h1>
-  <p>Combined hormonal contraception (pill, patch, or ring). Checklist v1.1.</p>
+  <p>Combined hormonal contraception (pill, patch, or ring). Checklist v1.2.</p>
 </header>
 
 <a class="flag-jump" id="flag-jump" href="#flags">Items to check: none flagged</a>
@@ -645,7 +651,7 @@
 
         <section class="card">
           <h2>5. Smoking</h2>
-          <p class="hint">Under 35, current smoking is a note. From age 35 it is highlighted, and 15 or more cigarettes a day is the strongest highlight. Stopping less than 1 year ago is highlighted only from age 35.</p>
+          <p class="hint">Current smoking is highlighted. From age 35, 15 or more cigarettes a day is the strongest highlight. Stopping less than 1 year ago is highlighted only from age 35.</p>
           <fieldset class="paintable" id="fs-smoking">
             <legend class="visually-hidden">Smoking</legend>
             <div class="choices stack">
@@ -858,8 +864,8 @@
               <p id="callout-ms" class="callout" hidden></p>
             </fieldset>
           </div>
-          <button type="button" id="mark-no-btn">Mark remaining risk factors as No (asked and none)</button>
-          <p class="hint">Fills only the blank conditions in this section. Answers already given stay as they are.</p>
+          <button type="button" id="mark-no-btn">Mark blanks as No</button>
+          <p class="hint">Empty rows in this section only. Answers already chosen stay as they are.</p>
         </section>
 
         <section class="card">
@@ -901,7 +907,7 @@
 </div>
 
 <footer class="site-footer">
-  <p>Checklist v1.1</p>
+  <p>Checklist v1.2</p>
   <p>Last reviewed: 3 November 2026</p>
 </footer>
 
@@ -915,7 +921,7 @@
 (function () {
   "use strict";
 
-  var VERSION = "v1.1";
+  var VERSION = "v1.2";
   var CHECK_PHRASE = "Relevant to UKMEC 2025 - check CoSRH table.";
   var CUMULATIVE = "Multiple risk factors present - UKMEC 2025 advises clinical judgement on cumulative risk";
 
@@ -1078,18 +1084,24 @@
       return { flag: null, note: "" };
     }
     if (state.smoking === "current") {
+      var cig = state.cigs === null ? "" : " (" + plainNum(state.cigs) + " cigarettes/day)";
       if (state.age === null) {
-        return { flag: null, note: "Enter age - current smoking is flagged from age 35, and in red at 15 or more cigarettes a day." };
+        return {
+          flag: { level: "amber", text: "UKMEC category depends on age and cigs/day - check CoSRH table." },
+          note: "Enter age - the UKMEC category for current smoking depends on age and cigarettes per day."
+        };
       }
       if (state.age >= 35) {
-        var cig = state.cigs === null ? "" : " (" + plainNum(state.cigs) + " cigarettes/day)";
         var level = state.cigs !== null && state.cigs >= 15 ? "red" : "amber";
         return {
           flag: { level: level, text: "Current smoker aged 35 or over" + cig + ". " + CHECK_PHRASE },
           note: ""
         };
       }
-      return { flag: null, note: "Note: Current smoker under 35. " + CHECK_PHRASE };
+      return {
+        flag: { level: "amber", text: "Current smoker under 35" + cig + ". " + CHECK_PHRASE },
+        note: ""
+      };
     }
     return { flag: null, note: "" };
   }
@@ -1212,8 +1224,8 @@
   function smokingText(state) {
     if (!state.smoking) return "";
     if (state.smoking === "never") return "Smoking: never";
-    if (state.smoking === "exlt1") return "Smoking: ex-smoker stopped <1 year";
-    if (state.smoking === "exgte1") return "Smoking: ex-smoker stopped >=1 year";
+    if (state.smoking === "exlt1") return "Smoking: ex-smoker, stopped less than 1 year ago";
+    if (state.smoking === "exgte1") return "Smoking: ex-smoker, stopped 1 year or more ago";
     if (state.cigs === null) return "Smoking: current";
     return "Smoking: current, " + plainNum(state.cigs) + " cigarettes/day";
   }
@@ -1230,21 +1242,23 @@
     if (!state.migraine) return "";
     if (state.migraine === "none") return "Migraine: none";
     if (state.migraine === "aura") return "Migraine: with aura";
-    var line = "Migraine: without aura";
-    if (state.migChange === "yes" || state.migChange === "no") {
-      line += "; started or worsened since starting CHC: " + (state.migChange === "yes" ? "Yes" : "No");
-    }
-    return line;
+    if (state.migChange !== "yes" && state.migChange !== "no") return "Migraine: without aura";
+    return "Migraine: without aura, new or worse on CHC: " + (state.migChange === "yes" ? "Yes" : "No");
   }
 
   function missingCore(state) {
     var missing = [];
+    if (!state.method) missing.push("method");
     if (state.age === null) missing.push("age");
     if (state.sys === null || state.dia === null || !state.bpSetting) missing.push("BP");
     if (state.bmi === null) missing.push("BMI");
     if (!state.smoking) missing.push("smoking");
+    if (state.smoking === "current" && state.cigs === null) missing.push("cigs/day");
     if (!state.vaping) missing.push("vaping");
     if (!state.migraine) missing.push("migraine");
+    if (state.migraine === "noaura" && state.migChange !== "yes" && state.migChange !== "no") {
+      missing.push("new or worse on CHC");
+    }
     return missing;
   }
 
@@ -1271,7 +1285,7 @@
 
   function checklistLines(split) {
     if (split.noNames.length === CHECKS.length) {
-      return ["Other UKMEC risk factors asked (incl. new 2025: CKD, sickle cell trait, MS): none"];
+      return ["Other UKMEC risk factors asked (incl. CKD, sickle cell trait, MS): none"];
     }
     var lines = split.yesLines.slice();
     if (split.noNames.length) lines.push("No history of: " + split.noNames.join(", "));
@@ -1299,8 +1313,6 @@
     if (measures) lines.push(measures);
     var habits = habitsLine(state);
     if (habits) lines.push(habits);
-    var smokingNote = smokingAssessment(state).note;
-    if (smokingNote) lines.push(smokingNote);
     if (state.vaping === "current" && (state.altChc === "yes" || state.altChc === "no")) {
       lines.push("Alternatives to CHC discussed: " + (state.altChc === "yes" ? "Yes" : "No"));
     }
