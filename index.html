@@ -1019,6 +1019,7 @@
             <option>Continue CHC</option>
             <option>Continue CHC - risks and alternatives discussed</option>
             <option>Switch to POP (desogestrel)</option>
+            <option>Refer/book for LARC (implant / LNG-IUD / Cu-IUD)</option>
             <option>Stop CHC - other plan</option>
             <option>Awaiting further info (e.g. repeat BP)</option>
             <option>Other</option>
@@ -1243,6 +1244,7 @@
           "Continue CHC",
           "Continue CHC - risks and alternatives discussed",
           "Switch to POP (desogestrel)",
+          "Refer/book for LARC (implant / LNG-IUD / Cu-IUD)",
           "Stop CHC - other plan",
           "Awaiting further info (e.g. repeat BP)",
           "Other"
@@ -1541,6 +1543,7 @@
     }
     if (state.answers.enzyme === "yes" && !state.enzymeDrug) missing.push("enzyme-inducing drug");
     if (!state.planChoice) missing.push("plan");
+    if (state.planChoice === "Other" && !state.planText) missing.push("plan detail");
     return missing;
   }
 
@@ -1615,10 +1618,12 @@
   }
 
   function planLine(state) {
-    if (!state.planChoice && !state.planText) return "Plan: not recorded";
-    if (!state.planChoice) return "Plan: not recorded. " + state.planText;
-    if (!state.planText) return "Plan: " + state.planChoice + ".";
-    return "Plan: " + state.planChoice + ". " + state.planText;
+    if (!state.planChoice) {
+      return state.planText ? "Plan: not recorded - " + state.planText : "Plan: not recorded";
+    }
+    if (state.planChoice === "Other" && !state.planText) return "Plan: Other - not specified";
+    if (!state.planText) return "Plan: " + state.planChoice;
+    return "Plan: " + state.planChoice + " - " + state.planText;
   }
 
   function buildNote(state, flags) {
