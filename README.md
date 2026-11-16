@@ -8,7 +8,7 @@ Open `index.html` in Edge or Chrome. The page is one file, with CSS and JavaScri
 
 ## What it does
 
-- Records method, review type, age, blood pressure, BMI, smoking, vaping, migraine, a yes/no history list, and mood discussion.
+- Records method, review type, age, blood pressure, BMI, smoking, vaping, migraine, a yes/no history list, mood discussion, and a plan. Method stays COC, patch, or ring. The plan line is `Plan: [choice]. [free text]`. If the list is blank, the line is `Plan: not recorded` and `plan` is added to the incomplete line.
 - Shows a live **Items to check** list. Every highlight on the page says to check the CoSRH UKMEC 2025 table. That sentence is left out of each copied flag. When any flags are present, the note adds `Flags checked against UKMEC 2025 tables: Yes` or `No`. If the box is unticked, `UKMEC table check` is added to the incomplete line.
 - Method, age, blood pressure, BMI, smoking, vaping, and migraine are needed for a complete note. A current smoker also needs cigarettes per day. Migraine without aura also needs whether it is new or worse on CHC. If any of these are blank, the note puts `INCOMPLETE - not recorded: ...` on the line under the heading, and an amber warning sits next to Copy. Prompts such as “Enter age” stay on the page and are not copied. `Flags: none` is used only when that list is empty and nothing is highlighted. The method line is always present.
 - Other blank history items are left out of the note. Every history condition answered No is named on one line. If all of them are No, the note uses: `Other UKMEC risk factors asked (incl. CKD, sickle cell trait, MS): none`. Yes answers are listed on their own. A count above Copy shows how many risk factors are not yet asked.
