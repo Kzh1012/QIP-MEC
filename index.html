@@ -545,9 +545,8 @@
   }
 
   #mark-no-btn {
-    align-self: flex-end;
     width: auto;
-    margin: 4px 2px 0 0;
+    margin: 0;
     white-space: nowrap;
     background: #fff;
     color: var(--blue);
@@ -555,7 +554,29 @@
     text-align: center;
   }
 
-  #mark-no-btn + .hint { margin: 0; }
+  .mark-no {
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    margin: 8px 2px 0 0;
+    max-width: 100%;
+  }
+
+  .mark-no .hint {
+    margin: 0;
+    text-align: left;
+    line-height: 1.35;
+  }
+
+  .mark-no .hint span { display: block; }
+
+  #fs-ms > .callout,
+  #fs-ms .follow-up > fieldset > legend {
+    border-left: 3px solid var(--blue);
+    padding-left: 10px;
+  }
 
   #mark-no-btn:hover { background: #e8f4fc; }
 
@@ -1028,8 +1049,10 @@
               </div>
             </fieldset>
           </div>
-          <button type="button" id="mark-no-btn">Mark blanks as No</button>
-          <p class="hint">Empty rows in this section only. Answers already chosen stay as they are.</p>
+          <div class="mark-no">
+            <button type="button" id="mark-no-btn">Mark blanks as No</button>
+            <p class="hint"><span>Empty rows in this section only.</span><span>Answers already chosen stay as they are.</span></p>
+          </div>
         </section>
 
         <section class="card">
